@@ -31,4 +31,5 @@ createServer((page) =>
                 .use(vuetify);
         },
     }),
+    { cluster: true }
 );

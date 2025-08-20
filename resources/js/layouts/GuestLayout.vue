@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { defineAsyncComponent } from 'vue';
 
-const current = ref('/');
+const navbar = defineAsyncComponent(
+    () => import('@/components/guest/layout/navbar.vue'),
+);
 </script>
+
 <template>
     <v-app>
+        <navbar />
         <v-main>
             <slot />
         </v-main>

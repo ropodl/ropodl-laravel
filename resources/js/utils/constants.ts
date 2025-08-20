@@ -29,8 +29,8 @@ export const pages = [
     },
     {
         icon: 'carbon:blog',
-        title: 'blogs',
-        to: '/blogs',
+        title: 'blog',
+        to: '/blog',
     },
     {
         icon: 'carbon:workspace',

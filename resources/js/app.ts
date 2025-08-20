@@ -1,16 +1,11 @@
-// import '../css/app.css';
-// import './bootstrap';
-
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, DefineComponent, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from './plugins/vuetify';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${title} - Saroj Poudel`,
     resolve: (name) =>
         resolvePageComponent(
             `./pages/${name}.vue`,
@@ -24,6 +19,6 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#fff',
     },
 });
