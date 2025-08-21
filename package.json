@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vue-tsc && vite build && vite build --ssr",
         "dev": "vite",
-        "lint": "eslint resources/js --ext .js,.ts,.vue --ignore-path .gitignore --fix"
+        "lint": "eslint resources/js --ext .js,.ts,.vue --fix"
     },
     "devDependencies": {
         "@iconify/vue": "^5.0.0",
@@ -16,8 +16,8 @@
         "@vue/eslint-config-typescript": "^14.6.0",
         "@vue/server-renderer": "^3.5.18",
         "concurrently": "^9.0.1",
-        "eslint": "^8.57.0",
-        "eslint-plugin-vue": "^9.23.0",
+        "eslint": "^9.33.0",
+        "eslint-plugin-vue": "^10.4.0",
         "laravel-vite-plugin": "^2.0.0",
         "prettier": "^3.6.2",
         "prettier-plugin-organize-imports": "^4.2.0",
@@ -30,6 +30,7 @@
         "vuetify": "^3.9.5"
     },
     "dependencies": {
-        "@iconify-json/carbon": "^1.2.13"
+        "@iconify-json/carbon": "^1.2.13",
+        "@typescript-eslint/eslint-plugin": "^8.40.0"
     }
 }

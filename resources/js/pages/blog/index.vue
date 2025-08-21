@@ -10,13 +10,19 @@ const blogs = ref<any[]>([
         date: '',
         slug: 'hi',
         title: 'This is a test',
-        featured_image: { name: 'test', url: 'ji' },
+        featured_image: { name: 'test', url: '/media/avatar.webp' },
+    },
+    {
+        date: '',
+        slug: 'hi',
+        title: 'This is a test',
+        featured_image: { name: 'test', url: '/media/avatar.webp' },
     },
 ]);
 </script>
 
 <template>
-    <GuestLayout>
+    <guest-layout title="Blogs" class="mt-16">
         <!-- <template #title>Blogs</template> -->
         <v-container>
             <template v-if="loading">
@@ -39,7 +45,7 @@ const blogs = ref<any[]>([
                                 createdAt,
                             } in blogs"
                         >
-                            <v-col cols="12" sm="6" md="4">
+                            <v-col cols="12" sm="6" md="6" lg="4">
                                 <Link :href="`/blog/${slug}`" as="span">
                                     <v-hover v-slot="{ isHovering, props }">
                                         <v-card
@@ -86,7 +92,11 @@ const blogs = ref<any[]>([
                                             </v-card>
                                             <v-card-text
                                                 class="pt-2 text-h6 font-weight-light text-white px-0 pb-0 line-clamp-3"
+                                                :class="[
+                                                    isHovering ? 'mb-n1' : '',
+                                                ]"
                                                 style="
+                                                    transition: all 1s linear;
                                                     line-height: normal;
                                                     white-space: normal;
                                                 "
@@ -136,5 +146,5 @@ const blogs = ref<any[]>([
         </v-col>
       </template> -->
         </v-container>
-    </GuestLayout>
+    </guest-layout>
 </template>

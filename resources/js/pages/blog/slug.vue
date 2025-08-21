@@ -1,22 +1,37 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useDisplay } from 'vuetify';
+import { defineAsyncComponent, ref } from 'vue';
 
-const blog = ref<any>({});
+const GuestLayout = defineAsyncComponent(
+    () => import('@/layouts/GuestLayout.vue'),
+);
+// defineProps<{
+//     test: {
+//         type: boolean;
+//         default: false;
+//         required: false;
+//     };
+// }>();
 
-const { xs, sm, md, lg, xlAndUp } = useDisplay();
-const calculateHeight = computed(() => {
-    if (xs.value) return 300;
-    else if (sm.value) return 400;
-    else if (md.value) return 550;
-    else if (lg.value) return 650;
-    else if (xlAndUp.value) return 800;
-    return 700;
-});
+const test = ref(
+    'oiajsdijas dij asidj aiosjd oaisdj aosijd oaisjd aiosjd aiosj',
+);
+
+// const { xs, sm, md, lg, xlAndUp } = useDispSlay();
+// const calculateHeight = computed(() => {
+//     if (xs.value) return 300;
+//     else if (sm.value) return 400;
+//     else if (md.value) return 550;
+//     else if (lg.value) return 650;
+//     else if (xlAndUp.value) return 800;
+//     return 700;
+// });
 </script>
 <template>
-    <v-card border="b" rounded="0">
-        <v-img
+    <GuestLayout>
+        {{ test }}
+    </GuestLayout>
+    <!-- <v-card border="b" rounded="0"> -->
+    <!-- <v-img
             cover
             :height="calculateHeight"
             :src="blog.featured_image?.url"
@@ -60,7 +75,7 @@ const calculateHeight = computed(() => {
                 </template>
             </v-col>
         </v-row>
-    </v-container>
+    </v-container>  -->
 </template>
 
 <style lang="scss">
