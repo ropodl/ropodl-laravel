@@ -139,8 +139,7 @@ const works = [
 ];
 </script>
 <template>
-    <GuestLayout>
-        <!-- <template #title>Portfolio</template> -->
+    <GuestLayout title="Portfolio." class="mt-16">
         <v-container>
             <v-row>
                 <v-col>

@@ -104,8 +104,7 @@ const getTitle = (name) => {
 };
 </script>
 <template>
-    <GuestLayout>
-        About Pagee
+    <GuestLayout title="About." class="mt-16">
         <v-container>
             <v-row dense>
                 <v-col cols="12" md="3">
@@ -197,7 +196,7 @@ const getTitle = (name) => {
                     <v-card border height="121" color="brand" class="mb-2">
                         <v-card-title class="h-100">
                             <ul
-                                class="list-style-none h-100 d-flex justify-center align-center flex-wrap"
+                                class="list-none h-100 d-flex justify-center align-center flex-wrap"
                             >
                                 <template v-for="{ text, icon } in backend">
                                     <li>
@@ -229,7 +228,7 @@ const getTitle = (name) => {
                     <v-card border height="121">
                         <v-card-title class="h-100">
                             <ul
-                                class="list-style-none h-100 d-flex justify-center align-center flex-wrap"
+                                class="list-none h-100 d-flex justify-center align-center flex-wrap"
                             >
                                 <template v-for="{ text, icon } in frontend">
                                     <li>

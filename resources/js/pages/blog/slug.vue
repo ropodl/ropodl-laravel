@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Dynamic from '@/components/shared/dynamic.vue';
 import { computed, defineAsyncComponent, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 
@@ -22,8 +23,10 @@ const calculateHeight = computed(() => {
 const blog = ref({
     date: '',
     slug: 'hi',
-    title: 'This is a test',
+    title: 'Asus TUF Gaming F16 (2025) launched in Nepal with RTX 5060 GPU',
     featured_image: { name: 'test', url: '/media/avatar.webp' },
+    excerpt: 'this is a tests',
+    content: `asdasd`,
 });
 </script>
 <template>
@@ -40,7 +43,7 @@ const blog = ref({
                         <v-row>
                             <v-col cols="12">
                                 <v-card-title
-                                    class="text-md-h2 text-h4 font-weight-bold"
+                                    class="text-md-h2 text-h4 font-weight-bold px-0"
                                     style="
                                         line-height: 1.2;
                                         font-family: 'Ubuntu';
@@ -56,37 +59,7 @@ const blog = ref({
             </v-img>
         </v-card>
     </guest-layout>
-    <!-- <v-card border="b" rounded="0">
-        <v-img
-            cover
-            :height="calculateHeight"
-            :src="blog.featured_image?.url"
-            class="d-flex align-end"
-        >
-            <template v-if="blog.title">
-                <v-container>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-card-title
-                                class="text-md-h2 text-h4 font-weight-bold"
-                                style="
-                                    line-height: 1.2;
-                                    font-family: Ubuntu;
-                                    white-space: unset !important;
-                                "
-                            >
-                                {{ blog.title }}
-                            </v-card-title>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </template>
-        </v-img>
-    </v-card>
     <v-container>
-        <v-row>
-            <v-col cols="12"> </v-col>
-        </v-row>
         <v-row v-if="blog.excerpt">
             <v-col cols="12" md="12">
                 <div class="text-h6 text-sm-h4 font-weight-light">
@@ -97,19 +70,9 @@ const blog = ref({
         <v-row justify="center">
             <v-col cols="12" md="12">
                 <template v-if="blog.content">
-                    <LazySharedDynamicContent :content="blog.content" />
+                    <dynamic :content="blog.content" />
                 </template>
             </v-col>
         </v-row>
-    </v-container>  -->
+    </v-container>
 </template>
-
-<style lang="scss">
-.active {
-    view-transition-name: selected-film;
-}
-::view-transition-old(header),
-::view-transition-new(header) {
-    width: auto;
-}
-</style>

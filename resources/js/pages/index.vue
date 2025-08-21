@@ -59,7 +59,7 @@ import { Head, Link } from '@inertiajs/vue3';
                             </v-col>
                         </v-row>
                         <div>
-                            <ul class="list-style-none d-flex">
+                            <ul class="list-none d-flex">
                                 <template
                                     v-for="{ icon, link } in socials"
                                     :key="link"

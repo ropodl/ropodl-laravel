@@ -9,6 +9,7 @@ defineProps<{
 
 <style lang="scss">
 @use 'sass:color';
+@use 'sass:map';
 
 // Fonts
 $font-base: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -28,8 +29,8 @@ $colors: (
     code-block-bg: #1e1e1e,
     code-block-text: #e0e0e0,
     info-text: #999,
-    border-light: #333,
-    border-medium: #404,
+    border-light: #e7e7e7,
+    border-medium: #464646,
     border-blockquote: #4caf50,
     border-hr: #555,
 );
@@ -74,7 +75,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
 .dynamic-content {
     font-family: $font-base;
     line-height: 1.65;
-    color: map.get($colors, text);
+    color: map-get($colors, text);
     word-wrap: break-word;
     margin: 0 auto;
     padding: 15px;
@@ -264,10 +265,10 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
 
     // Alerts via loop
     $alert-types: (
-        info: #2196f3,
-        success: #4caf50,
-        warning: #ff9800,
-        danger: #f44336,
+        info: var(--v-theme-info),
+        success: var(--v-theme-success),
+        warning: var(--v-theme-warning),
+        danger: var(--v-theme-danger),
     );
     @each $type, $color in $alert-types {
         .alert-#{$type} {
