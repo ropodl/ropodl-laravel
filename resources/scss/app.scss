@@ -3,76 +3,87 @@ $heading-font: 'Roboto', sans-serif;
 $body-font: 'Ubuntu', sans-serif;
 
 @use 'vuetify' with (
-  $heading-font-family: $heading-font,
-  $body-font-family: $body-font,
+    $heading-font-family: $heading-font,
+    $body-font-family: $body-font
 );
 
+// Global
 body {
-  background-color: rgb(var(--v-theme-background));
+    background-color: rgb(var(--v-theme-background));
 }
+
+// Vuetify overrides
 .v-skeleton-loader__image {
-  height: 100% !important;
+    height: 100% !important;
 }
+
 .v-img:not(.v-parallax) {
-  transition: all 0.2s;
-  &.zoom-image .v-img__img {
-    transform: scale(1.2);
-  }
-  .v-img__img {
-    transform: scale(1);
     transition: all 0.2s;
-  }
+
+    .v-img__img {
+        transform: scale(1);
+        transition: all 0.2s;
+    }
+
+    &.zoom-image .v-img__img {
+        transform: scale(1.2);
+    }
 }
-// App specific classes
-.blur-8 {
-  backdrop-filter: blur(8px);
+
+// -------------------------
+// Utility Generators
+// -------------------------
+
+// 1. Blur utilities
+$blur-sizes: (2, 4, 6, 8, 10, 12, 14, 16);
+@each $size in $blur-sizes {
+    .blur-#{$size} {
+        backdrop-filter: blur(#{$size}px);
+    }
 }
-// Utility classes
+
+// 2. Position utilities
+$positions: (top, bottom, left, right);
+$pos-values: (0, 50, 100); // percent values
+@each $pos in $positions {
+    @each $val in $pos-values {
+        .#{$pos}-#{$val} {
+            #{$pos}: if(($val == 0), 0, #{$val}%);
+        }
+    }
+}
+
+// Inset shorthand
 .inset-0 {
-  inset: 0;
+    inset: 0;
 }
-.top-0 {
-  top: 0;
+
+// 3. Z-index utilities
+$z-indexes: (1, 5, 10, 11, 50, 100);
+@each $z in $z-indexes {
+    .z-#{$z} {
+        z-index: $z;
+    }
 }
-.bottom-0 {
-  bottom: 0;
+
+// 4. List helpers
+.list-none {
+    list-style: none;
 }
-.left-0 {
-  left: 0;
+
+// 5. Line clamp utilities (mixin + loop)
+@mixin line-clamp($lines) {
+    display: -webkit-box !important;
+    -webkit-line-clamp: $lines;
+    line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    white-space: normal !important;
+    overflow: hidden !important;
 }
-.right-0 {
-  right: 0;
-}
-.z-index-1 {
-  z-index: 1;
-}
-.z-index-11 {
-  z-index: 11;
-}
-.list-style-none {
-  list-style: none;
-}
-.line-clamp-1 {
-  display: -webkit-box !important;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-  -webkit-box-orient: vertical;
-  white-space: normal !important;
-  overflow: hidden !important;
-}
-.line-clamp-2 {
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  white-space: normal !important;
-  overflow: hidden !important;
-}
-.line-clamp-3 {
-  display: -webkit-box !important;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  white-space: normal !important;
-  overflow: hidden !important;
+
+$clamp-values: (1, 2, 3, 4, 5);
+@each $n in $clamp-values {
+    .line-clamp-#{$n} {
+        @include line-clamp($n);
+    }
 }

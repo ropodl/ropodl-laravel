@@ -22,8 +22,7 @@ const blogs = ref<any[]>([
 </script>
 
 <template>
-    <guest-layout title="Blogs" class="mt-16">
-        <!-- <template #title>Blogs</template> -->
+    <guest-layout title="Blogs." class="mt-16">
         <v-container>
             <template v-if="loading">
                 <v-row>
@@ -63,11 +62,15 @@ const blogs = ref<any[]>([
                                             class="h-100"
                                             :to="`/blogs/${slug}`"
                                         >
-                                            <v-card border flat class="mb-3">
+                                            <v-card
+                                                border
+                                                flat
+                                                height="250"
+                                                class="mb-3"
+                                            >
                                                 <v-img
                                                     cover
                                                     class="w-100 h-100"
-                                                    :aspect-ratio="16 / 9"
                                                     :class="[
                                                         isHovering
                                                             ? 'zoom-image active'
@@ -92,11 +95,7 @@ const blogs = ref<any[]>([
                                             </v-card>
                                             <v-card-text
                                                 class="pt-2 text-h6 font-weight-light text-white px-0 pb-0 line-clamp-3"
-                                                :class="[
-                                                    isHovering ? 'mb-n1' : '',
-                                                ]"
                                                 style="
-                                                    transition: all 1s linear;
                                                     line-height: normal;
                                                     white-space: normal;
                                                 "
