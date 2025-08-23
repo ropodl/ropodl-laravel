@@ -58,21 +58,21 @@ const blog = ref({
                 </template>
             </v-img>
         </v-card>
+        <v-container>
+            <v-row v-if="blog.excerpt">
+                <v-col cols="12" md="12">
+                    <div class="text-h6 text-sm-h4 font-weight-light">
+                        {{ blog.excerpt }}
+                    </div>
+                </v-col>
+            </v-row>
+            <v-row justify="center">
+                <v-col cols="12" md="12">
+                    <template v-if="blog.content">
+                        <dynamic :content="blog.content" />
+                    </template>
+                </v-col>
+            </v-row>
+        </v-container>
     </guest-layout>
-    <v-container>
-        <v-row v-if="blog.excerpt">
-            <v-col cols="12" md="12">
-                <div class="text-h6 text-sm-h4 font-weight-light">
-                    {{ blog.excerpt }}
-                </div>
-            </v-col>
-        </v-row>
-        <v-row justify="center">
-            <v-col cols="12" md="12">
-                <template v-if="blog.content">
-                    <dynamic :content="blog.content" />
-                </template>
-            </v-col>
-        </v-row>
-    </v-container>
 </template>

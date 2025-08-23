@@ -2,7 +2,7 @@
 import { defineAsyncComponent, ref } from 'vue';
 
 const GuestLayout = defineAsyncComponent(
-    () => import('@/layouts/GuestLayout.vue'),
+    () => import('../../layouts/GuestLayout.vue'),
 );
 
 const current = ref('All');
