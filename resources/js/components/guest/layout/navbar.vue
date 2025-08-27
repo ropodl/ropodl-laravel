@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { pages } from '@/utils/constants';
 import { Icon } from '@iconify/vue';
@@ -17,7 +18,6 @@ import { Link } from '@inertiajs/vue3';
         "
     >
         <v-tabs
-
             color="primary"
             density="compact"
             hide-slider

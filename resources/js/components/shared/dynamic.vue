@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 defineProps<{
     content: string;
@@ -53,7 +54,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
 @mixin heading(
     $tag,
     $size,
-    $lightness: 0,
+    $lightness: 0%,
     $border-bottom: none,
     $padding-bottom: 0
 ) {
@@ -75,7 +76,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
 .dynamic-content {
     font-family: $font-base;
     line-height: 1.65;
-    color: map-get($colors, text);
+    color: map.get($colors, text);
     word-wrap: break-word;
     margin: 0 auto;
     padding: 15px;
@@ -93,7 +94,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
     @include heading(
         h1,
         2.5em,
-        0,
+        0%,
         2px solid map.get($colors, border-light),
         0.4em
     );

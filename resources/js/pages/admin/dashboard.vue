@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
@@ -6,16 +7,11 @@ import { Head } from '@inertiajs/vue3';
 <template>
     <Head title="Dashboard" />
     <AuthenticatedLayout title="Dashboard">
-        <div>
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div
-                    class="overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-800"
-                >
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        You're logged in!
-                    </div>
-                </div>
-            </div>
-        </div>
+        <v-container>
+            <v-row>
+                <v-col cols="12"> You're logged in! </v-col>
+            </v-row>
+        </v-container>
+        <template #right-nav> asasd </template>
     </AuthenticatedLayout>
 </template>

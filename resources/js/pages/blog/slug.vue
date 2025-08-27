@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import Dynamic from '@/components/shared/dynamic.vue';
 import { computed, defineAsyncComponent, ref } from 'vue';
@@ -5,10 +6,6 @@ import { useDisplay } from 'vuetify';
 
 const GuestLayout = defineAsyncComponent(
     () => import('@/layouts/GuestLayout.vue'),
-);
-
-const test = ref(
-    'oiajsdijas dij asidj aiosjd oaisdj aosijd oaisjd aiosjd aiosj',
 );
 
 const { xs, sm, md, lg, xlAndUp } = useDisplay();

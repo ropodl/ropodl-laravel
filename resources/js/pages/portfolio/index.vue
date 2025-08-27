@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from 'vue';
 
@@ -152,7 +153,7 @@ const works = [
                             show-arrows
                             rounded="lg"
                         >
-                            <template v-for="item in categories">
+                            <template v-for="item in categories" :key="item">
                                 <v-tab
                                     color="brand"
                                     rounded="lg"

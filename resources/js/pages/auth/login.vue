@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
@@ -26,9 +27,8 @@ const submit = () => {
 </script>
 
 <template>
+    <Head title="Log in" />
     <GuestLayout title="Log In." class="mt-16">
-        <Head title="Log in" />
-
         <v-container>
             <v-row>
                 <v-col cols="12" md="4" class="fill-height">

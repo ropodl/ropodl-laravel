@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Icon } from '@iconify/vue';

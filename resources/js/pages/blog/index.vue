@@ -1,11 +1,21 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+type blogs = {
+    date: string;
+    slug: string;
+    title: string;
+    featured_image: {
+        name: string;
+        url: string;
+    };
+};
+
 const loading = ref(false);
-const page = ref(1);
-const blogs = ref<any[]>([
+const blogs = ref<blogs[]>([
     {
         date: '',
         slug: 'hi',
@@ -41,8 +51,8 @@ const blogs = ref<any[]>([
                                 slug,
                                 title,
                                 featured_image: { name, url },
-                                createdAt,
                             } in blogs"
+                            :key="title"
                         >
                             <v-col cols="12" sm="6" md="6" lg="4">
                                 <Link :href="`/blog/${slug}`" as="span">

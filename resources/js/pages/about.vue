@@ -1,4 +1,5 @@
-<script setup>
+<!-- eslint-disable vue/multi-word-component-names -->
+<script setup lang="ts">
 import { socials } from '@/utils/socials';
 import { Icon } from '@iconify/vue';
 import { defineAsyncComponent } from 'vue';
@@ -92,16 +93,16 @@ const backend = [
 //   "https://api.github.com/users/ropodl/repos"
 // );
 
-const getTitle = (name) => {
-    return name
-        .split('-')
-        .map((word, index) =>
-            index === 0
-                ? word.charAt(0).toUpperCase() + word.slice(1)
-                : word.charAt(0).toUpperCase() + word.slice(1),
-        )
-        .join('');
-};
+// const getTitle = (name: string) => {
+//     return name
+//         .split('-')
+//         .map((word, index) =>
+//             index === 0
+//                 ? word.charAt(0).toUpperCase() + word.slice(1)
+//                 : word.charAt(0).toUpperCase() + word.slice(1),
+//         )
+//         .join('');
+// };
 </script>
 <template>
     <GuestLayout title="About." class="mt-16">
@@ -198,7 +199,10 @@ const getTitle = (name) => {
                             <ul
                                 class="list-none h-100 d-flex justify-center align-center flex-wrap"
                             >
-                                <template v-for="{ text, icon } in backend">
+                                <template
+                                    v-for="{ text, icon } in backend"
+                                    :key="text"
+                                >
                                     <li>
                                         <v-tooltip
                                             :text
@@ -230,7 +234,10 @@ const getTitle = (name) => {
                             <ul
                                 class="list-none h-100 d-flex justify-center align-center flex-wrap"
                             >
-                                <template v-for="{ text, icon } in frontend">
+                                <template
+                                    v-for="{ text, icon } in frontend"
+                                    :key="text"
+                                >
                                     <li>
                                         <v-tooltip
                                             :text
@@ -292,6 +299,7 @@ const getTitle = (name) => {
                                                 icon,
                                                 link,
                                             } in socials"
+                                            :key="name"
                                         >
                                             <li>
                                                 <v-tooltip
@@ -356,6 +364,7 @@ const getTitle = (name) => {
                                                 title,
                                                 desc,
                                             } in experience"
+                                            :key="title"
                                         >
                                             <v-card-title
                                                 class="pa-0"
@@ -413,6 +422,7 @@ const getTitle = (name) => {
                                                         text,
                                                         icon,
                                                     } in software"
+                                                    :key="text"
                                                 >
                                                     <li>
                                                         <v-tooltip
@@ -463,7 +473,7 @@ const getTitle = (name) => {
                                             </v-card>
                                         </v-col>
                                         <v-col cols="12" md="6">
-                                            <v-card
+                                            <!-- <v-card
                                                 border
                                                 height="121"
                                                 class="mb-2"
@@ -494,7 +504,7 @@ const getTitle = (name) => {
                                                         text="Error loading GitHub profile"
                                                     ></v-alert>
                                                 </div>
-                                            </v-card>
+                                            </v-card> -->
                                         </v-col>
                                     </v-row>
                                     <v-card border height="250" title="Repos">
@@ -506,7 +516,7 @@ const getTitle = (name) => {
                                                 overflow-y: scroll;
                                             "
                                         >
-                                            <template v-if="repos">
+                                            <!-- <template v-if="repos">
                                                 <v-list
                                                     class="py-0"
                                                     density="compact"
@@ -558,7 +568,7 @@ const getTitle = (name) => {
                                                     type="error"
                                                     text="Error loading GitHub repo infos"
                                                 ></v-alert>
-                                            </template>
+                                            </template> -->
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
