@@ -14,29 +14,35 @@ const vuetify = createVuetify({
             border: true,
             flat: true,
             rounded: 'lg',
-            color: 'rgb(var(--v-theme-background))',
+            // color: 'rgb(var(--v-theme-background))',
         },
         VAutocomplete: {
+            rounded: 'lg',
             density: 'comfortable',
             variant: 'outlined',
         },
         VTextField: {
+            rounded: 'lg',
             density: 'compact',
             variant: 'outlined',
         },
         VTextarea: {
+            rounded: 'lg',
             variant: 'outlined',
         },
         VDataTableServer: {
             hover: true,
+            rounded: 'lg',
             class: 'bg-transparent',
             density: 'comfortable',
         },
         VSelect: {
+            rounded: 'lg',
             density: 'comfortable',
             variant: 'outlined',
         },
         VTooltip: {
+            rounded: 'lg',
             theme: 'light',
         },
     },

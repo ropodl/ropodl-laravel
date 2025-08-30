@@ -7,7 +7,9 @@ import { Head, Link } from '@inertiajs/vue3';
 </script>
 <template>
     <Head>
-        <title>This is a test</title>
+        <title>
+            Fullstack Developer with experience in Vuejs, Laravel, Hono, Express
+        </title>
     </Head>
     <GuestLayout>
         <section class="my-16">
