@@ -1,17 +1,18 @@
 <script setup lang="ts">
+import { useNavDrawerStore } from '@/store/admin/nav';
 import { Icon } from '@iconify/vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
+import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 
 defineProps<{
     title: string;
 }>();
 
-const {
-    props: { auth },
-} = usePage();
+const { props } = usePage();
 
-const rail = ref(true);
+const nav = useNavDrawerStore();
+const { left, right } = storeToRefs(nav);
 
 const navItems = ref([
     {
@@ -32,40 +33,61 @@ const navItems = ref([
 ]);
 
 const railIcon = computed(() => {
-    return rail.value ? 'carbon:side-panel-open' : 'carbon:side-panel-close';
+    return left.value ? 'carbon:side-panel-open' : 'carbon:side-panel-close';
 });
 
-const secondary = ref(false);
+const openHome = () => {
+    window.open('/', '_blank');
+};
 </script>
 
 <template>
     <v-app>
-        <v-app-bar flat border="b" order="0" height="64" class="px-1">
+        <!-- flat
+        rounded="lg"
+        location="top"
+        class="position-fixed pa-1 blur-8 top-10 z-1010" -->
+        <v-app-bar
+            flat
+            density="compact"
+            border="b"
+            order="0"
+            height="64"
+            color="rgba(var(--v-theme-surface), 0.7)"
+            class="px-1 blur-8"
+        >
             <v-row align="center">
                 <v-col cols="12" md="4">
-                    <v-btn icon variant="text" @click="rail = !rail">
+                    <v-btn
+                        icon
+                        height="36"
+                        variant="text"
+                        @click="left = !left"
+                    >
                         <v-icon>
                             <Icon :icon="railIcon" />
                         </v-icon>
                     </v-btn>
-                    <v-menu>
+                    <v-menu open-on-hover>
                         <template v-slot:activator="{ props }">
                             <v-btn color="primary" v-bind="props">
-                                Activator slot
+                                Website
                             </v-btn>
                         </template>
-                        <v-list>
-                            <Link href="/" target="_blank" as="span">
-                                <v-list-item title="Visit Website" link>
-                                    <template #prepend>
-                                        <v-icon>
-                                            <Icon
-                                                icon="carbon:earth-southeast-asia-filled"
-                                            />
-                                        </v-icon>
-                                    </template>
-                                </v-list-item>
-                            </Link>
+                        <v-list density="compact">
+                            <v-list-item
+                                link
+                                title="Visit Website"
+                                @click="openHome"
+                            >
+                                <template #prepend>
+                                    <v-icon>
+                                        <Icon
+                                            icon="carbon:earth-southeast-asia-filled"
+                                        />
+                                    </v-icon>
+                                </template>
+                            </v-list-item>
                         </v-list>
                     </v-menu>
                 </v-col>
@@ -75,76 +97,83 @@ const secondary = ref(false);
                     </div>
                 </v-col>
                 <v-col cols="12" md="4">
-                    <div class="d-flex align-center justify-end">
-                        <v-btn
-                            icon
-                            variant="text"
-                            @click="secondary = !secondary"
-                        >
-                            <v-icon>
-                                <Icon :icon="railIcon" />
-                            </v-icon>
-                        </v-btn>
-                    </div>
+                    <div class="d-flex align-center justify-end"></div>
                 </v-col>
             </v-row>
         </v-app-bar>
-        <v-navigation-drawer permanent :rail order="1">
+        <v-navigation-drawer
+            permanent
+            :rail="left"
+            order="1"
+            color="rgba(var(--v-theme-surface), 0.7)"
+            class="blur-8"
+        >
             <v-list nav density="compact">
                 <template v-for="{ title, icon, to } in navItems" :key="title">
-                    <v-tooltip :text="title" :disabled="!rail">
-                        <template v-slot:activator="{ props }">
-                            <Link :href="to" as="span">
-                                <v-list-item
-                                    :title
-                                    v-bind="props"
-                                    link
-                                    :active="$page.url === to"
-                                    :variant="
-                                        $page.url === to ? 'tonal' : undefined
-                                    "
-                                    color="primary"
-                                >
-                                    <template #prepend>
-                                        <v-icon>
-                                            <Icon :icon />
-                                        </v-icon>
-                                    </template>
-                                </v-list-item>
-                            </Link>
+                    <!-- <v-tooltip :text="title" :disabled="!rail"> -->
+                    <!-- <template v-slot:activator="{ props }"> -->
+                    <!-- <Link :href="to" as="span"> -->
+                    <v-list-item
+                        :title
+                        v-bind="props"
+                        link
+                        :active="$page.url === to"
+                        :variant="$page.url === to ? 'tonal' : undefined"
+                        color="primary"
+                        @click="router.visit(to)"
+                    >
+                        <template #prepend>
+                            <v-icon>
+                                <Icon :icon />
+                            </v-icon>
                         </template>
-                    </v-tooltip>
+                    </v-list-item>
+                    <!-- </Link> -->
+                    <!-- </template> -->
+                    <!-- </v-tooltip> -->
                 </template>
             </v-list>
             <template v-slot:append>
                 <v-divider></v-divider>
                 <v-list>
-                    <v-list-item
-                        :prepend-avatar="`https://ui-avatars.com/api/?name=${auth.user.name}`"
-                        class="pe-0"
-                        :title="auth.user.name"
-                        :subtitle="auth.user.email"
-                    >
-                        <template v-slot:append>
-                            <v-menu>
-                                <template v-slot:activator="{ props }">
-                                    <v-btn
-                                        v-bind="props"
-                                        icon="mdi-menu-down"
-                                        size="small"
-                                        variant="text"
-                                    ></v-btn>
-                                </template>
-                                <v-list density="compact">
-                                    <v-list-item
-                                        title="Profile Settings"
-                                    ></v-list-item>
-                                    <v-divider></v-divider>
-                                    <v-list-item title="Log Out"></v-list-item>
-                                </v-list>
-                            </v-menu>
-                        </template>
-                    </v-list-item>
+                    <template v-if="props.auth?.user">
+                        <v-list-item
+                            class="pe-0"
+                            :title="props.auth?.user.name"
+                            :subtitle="props.auth?.user.email"
+                        >
+                            <template #prepend>
+                                <v-avatar>
+                                    <!-- <template> -->
+                                    <v-img
+                                        :src="`https://ui-avatars.com/api/?name=${props.auth?.user.name}`"
+                                    ></v-img>
+                                    <!-- </template> -->
+                                </v-avatar>
+                            </template>
+                            <template #append>
+                                <v-menu>
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn
+                                            v-bind="props"
+                                            icon="mdi-menu-down"
+                                            size="small"
+                                            variant="text"
+                                        ></v-btn>
+                                    </template>
+                                    <v-list density="compact">
+                                        <v-list-item
+                                            title="Profile Settings"
+                                        ></v-list-item>
+                                        <v-divider></v-divider>
+                                        <v-list-item
+                                            title="Log Out"
+                                        ></v-list-item>
+                                    </v-list>
+                                </v-menu>
+                            </template>
+                        </v-list-item>
+                    </template>
                 </v-list>
             </template>
         </v-navigation-drawer>
@@ -152,13 +181,20 @@ const secondary = ref(false);
             <slot />
         </v-main>
         <v-navigation-drawer
-            v-model="secondary"
+            v-model="right"
             order="2"
-            floating
             temporary
             location="right"
+            width="400"
+            color="rgba(var(--v-theme-surface), 0.7)"
+            class="pa-3 blur-8"
+            content-class="d-flex flex-column"
         >
-            <slot name="right-nav"></slot>
+            <slot name="right-nav-body"></slot>
+            <template #append>
+                <v-divider></v-divider>
+                <slot name="right-nav-append"></slot>
+            </template>
         </v-navigation-drawer>
     </v-app>
 </template>

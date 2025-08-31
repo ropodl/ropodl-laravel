@@ -7,15 +7,10 @@ import { Link } from '@inertiajs/vue3';
 <template>
     <v-card
         flat
+        color="rgba(var(--v-theme-surface), 0.7)"
         rounded="lg"
         location="top"
-        class="position-fixed pa-1"
-        style="
-            top: 10px;
-            z-index: 1010;
-            background-color: rgba(var(--v-theme-surface), 0.7);
-            backdrop-filter: blur(8px);
-        "
+        class="position-fixed pa-1 blur-8 top-10 z-1010"
     >
         <v-tabs
             color="primary"

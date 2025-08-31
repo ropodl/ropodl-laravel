@@ -12,7 +12,7 @@ import { Head, Link } from '@inertiajs/vue3';
         </title>
     </Head>
     <GuestLayout>
-        <section class="my-16">
+        <section class="mt-16">
             <v-container>
                 <v-row justify="center">
                     <v-col

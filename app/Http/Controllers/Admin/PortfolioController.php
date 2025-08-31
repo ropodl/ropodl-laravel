@@ -12,9 +12,24 @@ class PortfolioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('admin/portfolio/index');
+        $perPage = $request->input('per_page', 10); // Get per_page from request, default to 10
+        $filters = [];
+        $paginated = Portfolio::paginate($perPage);
+
+        return Inertia::render('admin/portfolio/index', [
+            'portfolios' => $paginated->items(), // Only portfolio items
+            'filters' => $filters,
+            'pagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page' => $paginated->lastPage(),
+                'per_page' => $paginated->perPage(),
+                'total' => $paginated->total(),
+                'from' => $paginated->firstItem(),
+                'to' => $paginated->lastItem(),
+            ],
+        ]);
     }
 
     /**
@@ -22,7 +37,7 @@ class PortfolioController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('admin/portfolio/id');
     }
 
     /**
@@ -31,6 +46,18 @@ class PortfolioController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request, $portfolio);
+        // $portfolio->save();
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|unique:portfolios|max:255',
+            'content' => 'required|string',
+            'status' => 'required|string|in:published,draft',
+        ]);
+
+        Portfolio::create($validated);
+
+        return to_route('portfolio.index')->with('success', 'Successfully created new blog.');
     }
 
     /**
@@ -38,7 +65,7 @@ class PortfolioController extends Controller
      */
     public function show(Portfolio $portfolio)
     {
-        //
+        return Inertia::render('admin/portfolio/id', ['portfolio' => $portfolio]);
     }
 
     /**
@@ -46,7 +73,9 @@ class PortfolioController extends Controller
      */
     public function edit(Portfolio $portfolio)
     {
-        //
+        return Inertia::render('admin/portfolio/id', [
+            'portfolio' => $portfolio,
+        ]);
     }
 
     /**

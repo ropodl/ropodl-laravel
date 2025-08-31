@@ -1,8 +1,11 @@
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createPinia } from 'pinia';
 import { createApp, DefineComponent, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from './plugins/vuetify';
+
+const pinia = createPinia();
 
 createInertiaApp({
     title: (title) => `${title} - Saroj Poudel`,
@@ -16,6 +19,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(vuetify)
+            .use(pinia)
             .mount(el);
     },
     progress: {
