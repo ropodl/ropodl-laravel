@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import { Head } from '@inertiajs/vue3';
 import { defineAsyncComponent, ref } from 'vue';
 
 const GuestLayout = defineAsyncComponent(
@@ -8,6 +9,10 @@ const GuestLayout = defineAsyncComponent(
 
 const current = ref('All');
 const categories = ['All', 'Graphic Design', 'Web', 'Branding'];
+
+defineProps<{
+    portfolios: object;
+}>();
 
 const works = [
     {
@@ -140,10 +145,14 @@ const works = [
 ];
 </script>
 <template>
+    <Head>
+        <title>Portfolio</title>
+    </Head>
     <GuestLayout title="Portfolio." class="mt-16">
         <v-container>
             <v-row>
                 <v-col>
+                    {{ portfolios }}
                     <v-card class="pa-1" style="max-width: max-content">
                         <v-tabs
                             v-model="current"

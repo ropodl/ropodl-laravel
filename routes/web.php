@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Portfolio;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,8 +19,22 @@ Route::get('/blog/{slug}', function () {
     return Inertia::render('blog/slug');
 })->name('blog');
 
-Route::get('/portfolio', function () {
-    return Inertia::render('portfolio/index');
+Route::get('/portfolio', function (Request $request) {
+    $perPage = $request->input('per_page', 10); // Get per_page from request, default to 10
+    $filters = [];
+    $paginated = Portfolio::paginate($perPage);
+
+    return Inertia::render('portfolio/index', [
+        'portfolios' => $paginated->items(),
+        'pagination' => [
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
+            'from' => $paginated->firstItem(),
+            'to' => $paginated->lastItem(),
+        ],
+    ]);
 })->name('portfolios');
 Route::get('/portfolio/{slug}', function () {
     return Inertia::render('portfolio/slug');

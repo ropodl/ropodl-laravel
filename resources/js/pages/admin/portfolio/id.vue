@@ -3,7 +3,7 @@
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import slugify from '@/utils/slugify';
 import { Head, useForm } from '@inertiajs/vue3';
-import { computed, defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent, watch } from 'vue';
 import { portfolio as port } from './portfolio';
 
 const breadcrumbs = defineAsyncComponent(
@@ -30,6 +30,31 @@ const form = useForm({
     status: portfolio?.status,
 });
 
+watch(
+    () => form.title,
+    (title) => {
+        if (portfolio?.slug) return;
+        else {
+            form.slug = slugify(title, {
+                maxLength: 70,
+            });
+        }
+    },
+);
+
+const rules = {
+    title: [
+        (v?: string) =>
+            (v && v.length <= 100) ||
+            'Portfolio Title must be 100 characters or less',
+    ],
+    slug: [
+        (v?: string) =>
+            (v && v.length <= 70) ||
+            'Portfolio Slug must be 70 characters or less',
+    ],
+};
+
 const submit = () => {
     form.post(route('portfolio.store'), {
         onFinish: () => {
@@ -37,13 +62,6 @@ const submit = () => {
             alert('Finish');
         },
     });
-};
-
-const rules = {
-    title: [
-        (v?: string) =>
-            (v && v.length <= 70) || 'Name must be 70 characters or less',
-    ],
 };
 </script>
 
@@ -67,18 +85,19 @@ const rules = {
                 {{ getSlug }}
                 <v-row>
                     <v-col cols="12" md="8">
-                        <v-label>Blog Title</v-label>
+                        <v-label>Portfolio Title</v-label>
                         <v-text-field
                             v-model="form.title"
                             placeholder="eg. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                             :rules="rules.title"
                         ></v-text-field>
-                        <v-label>Blog Slug</v-label>
+                        <v-label>Portfolio Slug</v-label>
                         <v-text-field
                             v-model="form.slug"
                             placeholder="eg. lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit"
+                            :rules="rules.slug"
                         ></v-text-field>
-                        <v-label>Blog Content</v-label>
+                        <v-label>Portfolio Content</v-label>
                         <v-card color="transparent">
                             <editor
                                 v-model:content="form.content"
@@ -87,10 +106,15 @@ const rules = {
                         </v-card>
                     </v-col>
                     <v-col cols="12" md="4">
-                        <v-card>
-                            <v-card-title>Title</v-card-title>
+                        <v-card class="mb-3">
+                            <v-card-title>Feature Image</v-card-title>
                         </v-card>
-                        <v-btn type="submit">Submit</v-btn>
+                        <v-card>
+                            <v-card-title>Actions</v-card-title>
+                            <v-card-actions>
+                                <v-btn type="submit">Submit</v-btn>
+                            </v-card-actions>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-container>

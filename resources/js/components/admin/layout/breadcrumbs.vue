@@ -25,6 +25,7 @@ defineProps<{
                             <Icon icon="carbon:home" />
                         </v-icon>
                     </template>
+                    <template #default>/-</template>
                     <template #title="{ item }">
                         <Link
                             class="text-decoration-none text-white"

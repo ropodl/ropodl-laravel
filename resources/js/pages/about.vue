@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { socials } from '@/utils/socials';
 import { Icon } from '@iconify/vue';
+import { Head } from '@inertiajs/vue3';
 import { defineAsyncComponent } from 'vue';
 
 const GuestLayout = defineAsyncComponent(
@@ -105,6 +106,9 @@ const backend = [
 // };
 </script>
 <template>
+    <Head>
+        <title>About Me</title>
+    </Head>
     <GuestLayout title="About." class="mt-16">
         <v-container>
             <v-row dense>

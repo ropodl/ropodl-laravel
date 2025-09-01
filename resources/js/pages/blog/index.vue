@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 type blogs = {
@@ -32,6 +32,9 @@ const blogs = ref<blogs[]>([
 </script>
 
 <template>
+    <Head>
+        <title>Blog</title>
+    </Head>
     <guest-layout title="Blogs." class="mt-16">
         <v-container>
             <template v-if="loading">
