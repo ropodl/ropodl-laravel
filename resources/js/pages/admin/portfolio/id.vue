@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import { Icon } from '@iconify/vue';
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { portfolio as port } from './portfolio';
 
 const { portfolio } = defineProps<{
@@ -19,32 +19,60 @@ const form = useForm({
 const submit = () => {
     form.post(route('portfolio.store'), {
         onFinish: () => {
-            form.reset();
+            // form.reset();
+            alert('Finish');
         },
     });
 };
 </script>
 
 <template>
+    <Head>
+        <title>{{ portfolio ? 'Edit' : 'Create' }} Portfolio</title>
+    </Head>
     <AuthenticatedLayout :title="`${portfolio ? 'Edit' : 'Create'} Portfolio`">
-        {{ portfolio }}
-        {{ form }}
         <form @submit.prevent="submit">
             <v-container>
                 <v-row>
                     <v-col cols="12" md="8">
                         <div class="d-flex align-center mb-3">
-                            <v-btn border icon class="me-3">
+                            <v-btn border icon size="small" class="me-3">
                                 <v-icon>
                                     <Icon icon="carbon:arrow-left" />
                                 </v-icon>
                             </v-btn>
-                            <div class="text-h3">
-                                {{ portfolio ? 'Edit' : 'Create' }} Portfolio
+                            <div>
+                                <v-breadcrumbs
+                                    :items="['a', 'b', 'c']"
+                                ></v-breadcrumbs>
+                                <!-- {{ portfolio ? 'Edit' : 'Create' }} Portfolio -->
                             </div>
                         </div>
+                        <v-label>This is title</v-label>
+                        <v-text-field
+                            v-model="form.title"
+                            placeholder="eg. Lorem ipsum dolor"
+                        ></v-text-field>
                         <v-card>
-                            <v-card-title>Money</v-card-title>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12" class="pb-0">
+                                        <v-text-field
+                                            placeholder="Blog Title"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="12" class="py-0">
+                                        <v-text-field
+                                            placeholder="Blog Title"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="6" class="py-0">
+                                        <v-text-field
+                                            placeholder="Blog Title"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
                         </v-card>
                     </v-col>
                     <v-col cols="12" md="4">

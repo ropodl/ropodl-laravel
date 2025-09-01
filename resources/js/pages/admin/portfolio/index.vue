@@ -5,7 +5,7 @@ import { useNavDrawerStore } from '@/store/admin/nav';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { portfolio } from './portfolio';
 
 const { portfolios, pagination } = defineProps<{
@@ -14,8 +14,14 @@ const { portfolios, pagination } = defineProps<{
     pagination: pagination;
 }>();
 
+// store
 const nav = useNavDrawerStore();
 const { right } = storeToRefs(nav);
+
+// components
+const breadcrumbs = defineAsyncComponent(
+    () => import('@/components/admin/layout/breadcrumbs.vue'),
+);
 
 // const filter = ref(filters);
 const paginate = ref(pagination);
@@ -54,6 +60,16 @@ const getColor = (value: string) => {
     </Head>
     <AuthenticatedLayout title="Portfolios List">
         <v-container>
+            <breadcrumbs
+                :items="[
+                    { title: 'admin', href: '/admin/' },
+                    {
+                        title: 'portfolio',
+                        href: '/admin/portfolio',
+                        disabled: true,
+                    },
+                ]"
+            />
             <v-row align="center">
                 <v-col cols="12" md="4">
                     <!-- v-model="filters.search" -->

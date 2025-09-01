@@ -45,6 +45,9 @@ const vuetify = createVuetify({
             rounded: 'lg',
             theme: 'light',
         },
+        VLabel: {
+            class: 'pt-0 pl-0 font-weight-medium pb-2',
+        },
     },
     theme: {
         defaultTheme: 'dark',
