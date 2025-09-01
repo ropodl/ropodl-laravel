@@ -4,7 +4,7 @@ import { Icon } from '@iconify/vue';
 import { Link } from '@inertiajs/vue3';
 
 defineProps<{
-    items: object;
+    items: BreadcrumbItem[];
     back?: boolean;
 }>();
 </script>
@@ -20,11 +20,16 @@ defineProps<{
                     </v-btn>
                 </template>
                 <v-breadcrumbs density="compact" :items="items">
+                    <template v-slot:prepend>
+                        <v-icon size="small">
+                            <Icon icon="carbon:home" />
+                        </v-icon>
+                    </template>
                     <template #item="{ item }">
                         <Link
                             class="text-decoration-none text-white"
-                            :disable
                             :href="item.href"
+                            as="VBtn"
                         >
                             {{ item.title }}
                         </Link>

@@ -23,7 +23,6 @@ const breadcrumbs = defineAsyncComponent(
     () => import('@/components/admin/layout/breadcrumbs.vue'),
 );
 
-// const filter = ref(filters);
 const paginate = ref(pagination);
 
 // Headers for the v-data-table-server
@@ -45,6 +44,7 @@ const getUpdate = () => {
         {
             preserveState: true,
             replace: true,
+            async: true,
         },
     );
 };
@@ -62,11 +62,9 @@ const getColor = (value: string) => {
         <v-container>
             <breadcrumbs
                 :items="[
-                    { title: 'admin', href: '/admin/' },
                     {
                         title: 'portfolio',
                         href: '/admin/portfolio',
-                        disabled: true,
                     },
                 ]"
             />

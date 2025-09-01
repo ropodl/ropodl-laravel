@@ -8,6 +8,11 @@ declare global {
         axios: AxiosInstance;
     }
 
+    interface BreadcrumbItem {
+        title: string;
+        href: string;
+    }
+
     interface pagination {
         current_page: number;
         last_page: number;
