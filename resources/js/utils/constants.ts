@@ -1,4 +1,4 @@
-export const itemsPerPageOptions = [
+export const itemsPerPage = [
     {
         title: '10',
         value: 10,

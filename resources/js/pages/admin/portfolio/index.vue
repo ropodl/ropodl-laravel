@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import { useNavDrawerStore } from '@/store/admin/nav';
+import { itemsPerPage } from '@/utils/constants';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
@@ -45,6 +46,7 @@ const getUpdate = () => {
             preserveState: true,
             replace: true,
             async: true,
+            showProgress: true,
         },
     );
 };
@@ -52,6 +54,14 @@ const getUpdate = () => {
 const getColor = (value: string) => {
     return value === 'published' ? 'green' : 'yellow';
 };
+
+const bread = [
+    { title: '/', href: '/admin/' },
+    {
+        title: 'portfolio',
+        href: '/admin/portfolio',
+    },
+];
 </script>
 
 <template>
@@ -60,14 +70,7 @@ const getColor = (value: string) => {
     </Head>
     <AuthenticatedLayout title="Portfolios List">
         <v-container>
-            <breadcrumbs
-                :items="[
-                    {
-                        title: 'portfolio',
-                        href: '/admin/portfolio',
-                    },
-                ]"
-            />
+            <breadcrumbs :items="bread" />
             <v-row align="center">
                 <v-col cols="12" md="4">
                     <!-- v-model="filters.search" -->
@@ -166,7 +169,7 @@ const getColor = (value: string) => {
                             hide-details
                             density="compact"
                             max-width="100"
-                            :items="[10, 25, 50, 75, 100]"
+                            :items="itemsPerPage"
                             @update:model-value="getUpdate"
                         ></v-select>
                     </div>

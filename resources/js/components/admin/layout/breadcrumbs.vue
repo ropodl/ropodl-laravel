@@ -25,11 +25,10 @@ defineProps<{
                             <Icon icon="carbon:home" />
                         </v-icon>
                     </template>
-                    <template #item="{ item }">
+                    <template #title="{ item }">
                         <Link
                             class="text-decoration-none text-white"
                             :href="item.href"
-                            as="VBtn"
                         >
                             {{ item.title }}
                         </Link>
