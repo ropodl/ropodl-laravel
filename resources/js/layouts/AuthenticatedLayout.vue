@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useNavDrawerStore } from '@/store/admin/nav';
 import { Icon } from '@iconify/vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 
@@ -15,22 +15,55 @@ const nav = useNavDrawerStore();
 const { left, right } = storeToRefs(nav);
 
 const navItems = ref([
+    { icon: 'mdi-home-outline', title: 'Home', to: '/admin/' },
     {
-        icon: 'carbon:home',
-        title: 'Home',
-        to: '/admin/',
+        icon: 'mdi-pencil-outline',
+        title: 'Blog',
+        subtitle: 'Content And Portfolio',
+        subitems: [
+            { title: 'All Blogs', to: '/admin/blog' },
+            { title: 'Add New', to: '/admin/blog/create' },
+            { title: 'Categories', to: '/admin/category' },
+            { title: 'Tags', to: '/admin/tag' },
+            {
+                icon: 'mdi-pencil-outline',
+                title: 'Blog Comments',
+                grand: [{ title: 'All Comments', to: '/admin/blog/comments' }],
+            },
+        ],
     },
     {
-        icon: 'carbon:blog',
-        title: 'Blogs',
-        to: '/admin/blog',
+        icon: 'mdi-image-outline',
+        title: 'Portfolio',
+        subitems: [
+            { title: 'All Portfolio', to: '/admin/portfolio' },
+            { title: 'Add New', to: '/admin/portfolio/create' },
+            { title: 'Work Type', to: '/admin/portfolio/type' },
+        ],
     },
     {
-        icon: 'carbon:home',
-        title: 'Portfolios',
-        to: '/admin/portfolio',
+        icon: 'mdi-phone-outline',
+        title: 'Contact Request',
+        subtitle: 'Contact and Feedback',
+        to: '/admin/contact-request',
     },
 ]);
+//     {
+//         icon: 'carbon:home',
+//         title: 'Home',
+//         to: '/admin/',
+//     },
+//     {
+//         icon: 'carbon:blog',
+//         title: 'Blogs',
+//         to: '/admin/blog',
+//     },
+//     {
+//         icon: 'carbon:home',
+//         title: 'Portfolios',
+//         to: '/admin/portfolio',
+//     },
+// ]);
 
 const railIcon = computed(() => {
     return left.value ? 'carbon:side-panel-open' : 'carbon:side-panel-close';
@@ -39,14 +72,23 @@ const railIcon = computed(() => {
 const openHome = () => {
     window.open('/', '_blank');
 };
+
+const open = ref(['/admin/']);
+
+const admins = [
+    ['Management', 'mdi-account-multiple-outline'],
+    ['Settings', 'mdi-cog-outline'],
+];
+const cruds = [
+    ['Create', 'mdi-plus-outline'],
+    ['Read', 'mdi-file-outline'],
+    ['Update', 'mdi-update'],
+    ['Delete', 'mdi-delete'],
+];
 </script>
 
 <template>
     <v-app>
-        <!-- flat
-        rounded="lg"
-        location="top"
-        class="position-fixed pa-1 blur-8 top-10 z-1010" -->
         <v-app-bar
             flat
             density="compact"
@@ -108,29 +150,60 @@ const openHome = () => {
             color="rgba(var(--v-theme-surface), 0.7)"
             class="blur-8"
         >
-            <v-list nav density="compact">
-                <template v-for="{ title, icon, to } in navItems" :key="title">
-                    <!-- <v-tooltip :text="title" :disabled="!rail"> -->
-                    <!-- <template v-slot:activator="{ props }"> -->
-                    <!-- <Link :href="to" as="span"> -->
+            {{ open }}
+            <v-list v-model:opened="open" nav density="compact">
+                <template
+                    v-for="{ title, icon, to, subitems } in navItems"
+                    :key="title"
+                >
                     <v-list-item
-                        :title
-                        v-bind="props"
-                        link
-                        :active="$page.url === to"
-                        :variant="$page.url === to ? 'tonal' : undefined"
-                        color="primary"
-                        @click="router.visit(to)"
-                    >
-                        <template #prepend>
-                            <v-icon>
-                                <Icon :icon />
-                            </v-icon>
+                        prepend-icon="mdi-home"
+                        title="Home"
+                    ></v-list-item>
+
+                    <v-list-group value="Users">
+                        <template v-slot:activator="{ props }">
+                            <v-list-item
+                                v-bind="props"
+                                prepend-icon="mdi-account-circle"
+                                title="Users"
+                            ></v-list-item>
                         </template>
-                    </v-list-item>
-                    <!-- </Link> -->
-                    <!-- </template> -->
-                    <!-- </v-tooltip> -->
+
+                        <v-list-group value="Admin">
+                            <template v-slot:activator="{ props }">
+                                <v-list-item
+                                    v-bind="props"
+                                    title="Admin"
+                                ></v-list-item>
+                            </template>
+
+                            <v-list-item
+                                v-for="([title, icon], i) in admins"
+                                :key="i"
+                                :prepend-icon="icon"
+                                :title="title"
+                                :value="title"
+                            ></v-list-item>
+                        </v-list-group>
+
+                        <v-list-group value="Actions">
+                            <template v-slot:activator="{ props }">
+                                <v-list-item
+                                    v-bind="props"
+                                    title="Actions"
+                                ></v-list-item>
+                            </template>
+
+                            <v-list-item
+                                v-for="([title, icon], i) in cruds"
+                                :key="i"
+                                :prepend-icon="icon"
+                                :title="title"
+                                :value="title"
+                            ></v-list-item>
+                        </v-list-group>
+                    </v-list-group>
                 </template>
             </v-list>
             <template v-slot:append>
@@ -144,11 +217,9 @@ const openHome = () => {
                         >
                             <template #prepend>
                                 <v-avatar>
-                                    <!-- <template> -->
                                     <v-img
                                         :src="`https://ui-avatars.com/api/?name=${props.auth?.user.name}`"
                                     ></v-img>
-                                    <!-- </template> -->
                                 </v-avatar>
                             </template>
                             <template #append>

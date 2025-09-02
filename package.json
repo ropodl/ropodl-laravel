@@ -20,7 +20,7 @@
         "@vitejs/plugin-vue": "^6.0.1",
         "@vue/eslint-config-prettier": "^10.2.0",
         "@vue/eslint-config-typescript": "^14.6.0",
-        "@vue/server-renderer": "^3.5.20",
+        "@vue/server-renderer": "^3.5.21",
         "@vue/tsconfig": "^0.7.0",
         "concurrently": "^9.2.1",
         "eslint": "^9.34.0",
@@ -37,7 +37,7 @@
         "vite": "npm:rolldown-vite@latest",
         "vite-plugin-vue-devtools": "^8.0.1",
         "vite-plugin-vuetify": "^2.1.2",
-        "vue": "^3.5.20",
+        "vue": "^3.5.21",
         "vue-tsc": "^3.0.6",
         "vuetify": "^3.9.6"
     },
@@ -45,7 +45,7 @@
         "@iconify-json/carbon": "^1.2.13",
         "@mdi/font": "^7.4.47",
         "@vueup/vue-quill": "^1.2.0",
-        "@vueuse/core": "^13.8.0",
+        "@vueuse/core": "^13.9.0",
         "pinia": "^3.0.3"
     }
 }

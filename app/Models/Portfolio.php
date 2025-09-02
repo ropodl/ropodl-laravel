@@ -14,8 +14,6 @@ class Portfolio extends Model implements HasMedia
 
     protected $fillable = ['title', 'slug', 'content', 'status'];
 
-    // protected $appends = ['featured_image'];
-
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')

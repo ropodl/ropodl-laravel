@@ -43,9 +43,12 @@ const getUpdate = (options: { key: string; order?: boolean }[]) => {
     };
 
     router.get(route('portfolio.index'), params, {
-        preserveState: true,
-        preserveScroll: true,
+        showProgress: true,
+        async: true,
+        preserveState: false,
+        preserveScroll: false,
         replace: true,
+        only: ['portfolios', 'pagination'],
     });
 };
 
@@ -199,7 +202,17 @@ const bread = ref<BreadcrumbItem[]>([
             </v-row>
         </v-container>
         <template #right-nav-body>
-            <v-select :items="['a', 'b', 'c']"></v-select>
+            <v-label>Portfolio Status</v-label>
+            <v-select
+                placeholder="Select Portfolio Status"
+                :items="[
+                    {
+                        title: 'Published',
+                        value: 'published',
+                    },
+                    { title: 'Draft', value: 'draft' },
+                ]"
+            ></v-select>
         </template>
         <template #right-nav-append>
             <v-btn block class="mb-3" color="primary">Apply</v-btn>
