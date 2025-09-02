@@ -15,12 +15,28 @@ class PortfolioController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10); // Get per_page from request, default to 10
-        $filters = [];
-        $paginated = Portfolio::paginate($perPage);
+        $search = $request->input('search', '');
+        $sortBy = $request->input('sort_by', []);
+
+        $query = Portfolio::query();
+
+        if ($search) {
+            $query->where('title', 'like', '%'.$search.'%')
+                ->orWhere('content', 'like', '%'.$search.'%');
+        }
+
+        // Apply sorting
+        if (! empty($sortBy)) {
+            $query->orderBy($sortBy['key'], $sortBy['order']);
+        } else {
+            $query->orderBy('updated_at', 'desc');
+        }
+
+        $paginated = $query->paginate($perPage)->withQueryString();
 
         return Inertia::render('admin/portfolio/index', [
             'portfolios' => $paginated->items(), // Only portfolio items
-            'filters' => $filters,
+            'search' => $search,
             'pagination' => [
                 'current_page' => $paginated->currentPage(),
                 'last_page' => $paginated->lastPage(),
@@ -45,19 +61,26 @@ class PortfolioController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        // dd($request, $portfolio);
-        // $portfolio->save();
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|unique:portfolios|max:255',
             'content' => 'required|string',
-            'status' => 'required|string|in:published,draft',
+            'status' => 'required|string|in:published,draft,archived',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
         ]);
 
-        Portfolio::create($validated);
+        // Remove featured_image from validated data as we handle it separately
+        $portfolioData = collect($validated)->except('featured_image')->toArray();
 
-        return to_route('portfolio.index')->with('success', 'Successfully created new blog.');
+        $portfolio = Portfolio::create($portfolioData);
+
+        if ($request->hasFile('featured_image')) {
+            $portfolio->clearMediaCollection('featured_image');
+            $portfolio->addMediaFromRequest('featured_image')
+                ->toMediaCollection('featured_image');
+        }
+
+        return to_route('portfolio.show', [$portfolio])->with('message', 'Successfully created new portfolio.');
     }
 
     /**
@@ -65,7 +88,15 @@ class PortfolioController extends Controller
      */
     public function show(Portfolio $portfolio)
     {
-        return Inertia::render('admin/portfolio/id', ['portfolio' => $portfolio]);
+        // Load the portfolio with media
+        $portfolio->load('media');
+
+        // Add featured image URL if exists
+        $portfolioWithImage = $portfolio->toArray();
+        $featuredImage = $portfolio->getFirstMedia('featured_image');
+        $portfolioWithImage['featured_image'] = $featuredImage ? $featuredImage->getUrl() : null;
+
+        return Inertia::render('admin/portfolio/id', ['portfolio' => $portfolioWithImage]);
     }
 
     /**
@@ -73,8 +104,16 @@ class PortfolioController extends Controller
      */
     public function edit(Portfolio $portfolio)
     {
+        // Load the portfolio with media
+        $portfolio->load('media');
+
+        // Add featured image URL if exists
+        $portfolioWithImage = $portfolio->toArray();
+        $featuredImage = $portfolio->getFirstMedia('featured_image');
+        $portfolioWithImage['featured_image'] = $featuredImage ? $featuredImage->getUrl() : null;
+
         return Inertia::render('admin/portfolio/id', [
-            'portfolio' => $portfolio,
+            'portfolio' => $portfolioWithImage,
         ]);
     }
 
@@ -83,7 +122,26 @@ class PortfolioController extends Controller
      */
     public function update(Request $request, Portfolio $portfolio)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:portfolios,slug,'.$portfolio->id,
+            'content' => 'required|string',
+            'status' => 'required|string|in:published,draft,archived',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+        ]);
+
+        // Remove featured_image from validated data as we handle it separately
+        $portfolioData = collect($validated)->except('featured_image')->toArray();
+
+        $portfolio->update($portfolioData);
+
+        if ($request->hasFile('featured_image')) {
+            $portfolio->clearMediaCollection('featured_image');
+            $portfolio->addMediaFromRequest('featured_image')
+                ->toMediaCollection('featured_image');
+        }
+
+        return to_route('portfolio.show', [$portfolio])->with('message', 'Portfolio updated successfully.');
     }
 
     /**
@@ -91,6 +149,8 @@ class PortfolioController extends Controller
      */
     public function destroy(Portfolio $portfolio)
     {
-        //
+        $portfolio->delete();
+
+        return to_route('portfolio.index')->with('message', 'Portfolio deleted successfully.');
     }
 }

@@ -4,6 +4,7 @@ export interface portfolio {
     slug: string;
     content: string;
     status: string;
+    featured_image?: string;
 }
 // export interface pagination {
 //     current_page: number;

@@ -3,10 +3,12 @@
 import { Icon } from '@iconify/vue';
 import { Link } from '@inertiajs/vue3';
 
-defineProps<{
+const { items } = defineProps<{
     items: BreadcrumbItem[];
     back?: boolean;
 }>();
+
+const bread = [{ title: '', href: '' }, ...items];
 </script>
 <template>
     <v-row>
@@ -19,13 +21,17 @@ defineProps<{
                         </v-icon>
                     </v-btn>
                 </template>
-                <v-breadcrumbs density="compact" :items="items">
+                <v-breadcrumbs density="compact" :items="bread" class="pa-0">
                     <template v-slot:prepend>
-                        <v-icon size="small">
-                            <Icon icon="carbon:home" />
-                        </v-icon>
+                        <Link
+                            class="text-decoration-none text-white"
+                            href="/admin/"
+                        >
+                            <v-icon>
+                                <Icon icon="carbon:home" />
+                            </v-icon>
+                        </Link>
                     </template>
-                    <template #default>/-</template>
                     <template #title="{ item }">
                         <Link
                             class="text-decoration-none text-white"

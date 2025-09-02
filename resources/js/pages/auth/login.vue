@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps<{
     canResetPassword?: boolean;
@@ -14,15 +15,14 @@ const form = useForm({
     remember: false,
 });
 
+const showPassword = ref(false);
+
 const submit = () => {
-    console.log(form);
     form.post(route('login'), {
         onFinish: () => {
-            console.log(form);
             form.reset('password');
         },
     });
-    console.log(form);
 };
 </script>
 
@@ -52,8 +52,19 @@ const submit = () => {
                             v-model="form.password"
                             placeholder="Enter Password"
                             density="comfortable"
+                            :type="showPassword ? 'text' : 'password'"
                             :error-messages="form.errors.password"
-                        ></v-text-field>
+                        >
+                            <template #append-inner>
+                                <v-icon @click="showPassword = !showPassword">
+                                    {{
+                                        showPassword
+                                            ? 'mdi-eye-off-outline'
+                                            : 'mdi-eye-outline'
+                                    }}
+                                </v-icon>
+                            </template>
+                        </v-text-field>
                         <v-checkbox
                             v-model="form.remember"
                             label="Remember Me"

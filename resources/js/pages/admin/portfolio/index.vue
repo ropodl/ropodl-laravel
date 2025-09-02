@@ -5,63 +5,67 @@ import { useNavDrawerStore } from '@/store/admin/nav';
 import { itemsPerPage } from '@/utils/constants';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
+import { useDebounceFn } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { defineAsyncComponent, ref } from 'vue';
-import { portfolio } from './portfolio';
+import type { portfolio } from './portfolio';
 
-const { portfolios, pagination } = defineProps<{
-    portfolios: portfolio[];
-    filters: object;
-    pagination: pagination;
-}>();
-
-// store
-const nav = useNavDrawerStore();
-const { right } = storeToRefs(nav);
-
-// components
 const breadcrumbs = defineAsyncComponent(
     () => import('@/components/admin/layout/breadcrumbs.vue'),
 );
 
+const { portfolios, search, pagination } = defineProps<{
+    portfolios: portfolio[];
+    search?: string;
+    pagination: pagination;
+}>();
+
+const nav = useNavDrawerStore();
+const { right } = storeToRefs(nav);
+
+const searchQuery = ref(search);
 const paginate = ref(pagination);
 
 // Headers for the v-data-table-server
 const headers = [
-    { title: 'Title', key: 'title' },
-    { title: 'Status', key: 'status' },
-    { title: 'Created At', key: 'created_at' },
-    { title: 'Actions', key: 'actions' },
+    { title: 'Title', key: 'title', sortable: true },
+    { title: 'Status', key: 'status', sortable: true },
+    { title: 'Created At', key: 'created_at', sortable: true },
+    { title: 'Actions', key: 'actions', sortable: false },
 ];
 
-const getUpdate = () => {
-    router.get(
-        route('portfolio.index'),
-        {
-            search: '',
-            page: paginate.value.current_page,
-            per_page: paginate.value.per_page,
-        },
-        {
-            preserveState: true,
-            replace: true,
-            async: true,
-            showProgress: true,
-        },
-    );
+const getUpdate = (options: { key: string; order?: boolean }[]) => {
+    const params = {
+        search: searchQuery.value,
+        page: paginate.value.current_page,
+        per_page: paginate.value.per_page,
+        sort_by: options[0],
+    };
+
+    router.get(route('portfolio.index'), params, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+    });
 };
+
+// Add debounced search handler
+const handleSearch = useDebounceFn((value: string) => {
+    searchQuery.value = value;
+    paginate.value.current_page = 1; // Reset to first page when searching
+    getUpdate([]);
+}, 300);
 
 const getColor = (value: string) => {
     return value === 'published' ? 'green' : 'yellow';
 };
 
-const bread = [
-    { title: '/', href: '/admin/' },
+const bread = ref<BreadcrumbItem[]>([
     {
         title: 'portfolio',
         href: '/admin/portfolio',
     },
-];
+]);
 </script>
 
 <template>
@@ -73,13 +77,14 @@ const bread = [
             <breadcrumbs :items="bread" />
             <v-row align="center">
                 <v-col cols="12" md="4">
-                    <!-- v-model="filters.search" -->
                     <v-text-field
+                        v-model="searchQuery"
                         hide-details
                         clearable
                         persistent-clear
                         rounded="lg"
                         placeholder="Search portfolios"
+                        @update:model-value="handleSearch"
                     >
                         <template #prepend-inner>
                             <v-icon>
@@ -121,6 +126,7 @@ const bread = [
                             :page="pagination.current_page"
                             :items-per-page="pagination.per_page"
                             hide-default-footer
+                            @update:sort-by="getUpdate"
                         >
                             <template v-slot:[`item.status`]="{ value }">
                                 <v-chip
@@ -132,18 +138,24 @@ const bread = [
                                 </v-chip>
                             </template>
                             <template v-slot:[`item.actions`]="{ item }">
-                                {{ item }}
-                                <v-btn
-                                    @click="
-                                        router.visit(
-                                            `/admin/portfolio/${item.id}`,
-                                        )
-                                    "
-                                >
-                                    <v-icon>
-                                        <Icon icon="carbon:edit" />
-                                    </v-icon>
-                                </v-btn>
+                                <v-hover v-slot:default="{ isHovering, props }">
+                                    <v-btn
+                                        v-bind="props"
+                                        icon
+                                        size="small"
+                                        rounded="lg"
+                                        :variant="isHovering ? 'tonal' : 'text'"
+                                        @click="
+                                            router.visit(
+                                                `/admin/portfolio/${item.id}`,
+                                            )
+                                        "
+                                    >
+                                        <v-icon>
+                                            <Icon icon="carbon:edit" />
+                                        </v-icon>
+                                    </v-btn>
+                                </v-hover>
                             </template>
                         </v-data-table-server>
                     </v-card>
@@ -157,7 +169,12 @@ const bread = [
                             density="compact"
                             :total-visible="5"
                             :length="paginate.last_page"
-                            @update:model-value="getUpdate"
+                            @update:model-value="
+                                (value) => {
+                                    paginate.current_page = value;
+                                    getUpdate([]);
+                                }
+                            "
                         ></v-pagination>
                     </div>
                 </v-col>
@@ -170,7 +187,12 @@ const bread = [
                             density="compact"
                             max-width="100"
                             :items="itemsPerPage"
-                            @update:model-value="getUpdate"
+                            @update:model-value="
+                                (value) => {
+                                    paginate.per_page = value;
+                                    getUpdate([]);
+                                }
+                            "
                         ></v-select>
                     </div>
                 </v-col>
