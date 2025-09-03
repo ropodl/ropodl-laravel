@@ -76,7 +76,7 @@ const rules = {
 };
 
 // Fixed file change handler
-const handleFileChange = (file) => {
+const handleFileChange = (file: any) => {
     console.log('File change event:', file);
     form.featured_image = file;
     // console.log('Files received:', files);
@@ -196,7 +196,13 @@ const bread = computed<BreadcrumbItem[]>(() => {
                                 <!-- Show preview of new file -->
                                 <div v-if="form.featured_image" class="mb-3">
                                     <v-img
-                                        :src="useObjectUrl(form.featured_image)"
+                                        :src="
+                                            <any>(
+                                                useObjectUrl(
+                                                    form.featured_image,
+                                                )
+                                            )
+                                        "
                                         max-height="200"
                                         class="mb-2"
                                         cover
