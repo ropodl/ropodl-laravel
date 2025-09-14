@@ -3,7 +3,6 @@
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import slugify from '@/utils/slugify';
 import { Head, useForm } from '@inertiajs/vue3';
-import { useObjectUrl } from '@vueuse/core';
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { portfolio as port } from './portfolio';
 
@@ -16,18 +15,21 @@ const editor = defineAsyncComponent(
 
 const { portfolio } = defineProps<{
     portfolio?: port;
+    types: { id: number; title: string }[];
 }>();
 
 const form = useForm({
-    title: portfolio?.title || '',
-    slug: portfolio?.slug || '',
-    content: portfolio?.content || '',
-    featured_image: null as File | null,
-    status: portfolio?.status || 'draft',
+    _method: portfolio?.id ? 'PATCH' : 'POST',
+    title: portfolio?.title ?? '',
+    slug: portfolio?.slug ?? '',
+    content: portfolio?.content ?? '',
+    featured_image: portfolio?.featured_image ?? (null as File | null),
+    status: portfolio?.status ?? 'draft',
+    type_id: portfolio?.type_id ?? null,
 });
 
 // Keep track of existing image URL for display
-const existingImageUrl = ref(portfolio?.featured_image || '');
+const existingImageUrl = ref(portfolio?.featured_image ?? '');
 
 watch(
     () => form.title,
@@ -43,6 +45,7 @@ watch(
 
 const rules = {
     title: [
+        (v: string) => !!v || 'Portfolio Title is required',
         (v?: string) =>
             (v && v.length <= 100) ||
             'Portfolio Title must be 100 characters or less',
@@ -55,61 +58,42 @@ const rules = {
     featured_image: [
         (v?: File[]) => {
             if (!v || v.length === 0) return true;
-            // const file = v[0];
-            // const maxSize = 5 * 1024 * 1024; // 5MB
-            // const allowedTypes = [
-            //     'image/jpeg',
-            //     'image/png',
-            //     'image/gif',
-            //     'image/webp',
-            // ];
-
-            // if (file.size > maxSize) {
-            //     return 'File size must be less than 5MB';
-            // }
-            // if (!allowedTypes.includes(file.type)) {
-            //     return 'Only JPEG, PNG, GIF, and WebP images are allowed';
-            // }
             return true;
         },
     ],
 };
 
 // Fixed file change handler
-const handleFileChange = (file: any) => {
-    console.log('File change event:', file);
+const handleFileChange = (file: File | null) => {
     form.featured_image = file;
-    // console.log('Files received:', files);
-
-    // if (files && files.name) {
-    //     const file = files;
-    //     form.featured_image = file;
-    //     // Clear any previous error
-    //     form.errors.featured_image = '';
-    //     console.log('File selected:', file.name, 'Size:', file.size);
-    // } else {
-    //     form.featured_image = null;
-    //     console.log('No file selected or file cleared');
-    // }
 };
 
-const submit = () => {
-    const method = portfolio ? 'patch' : 'post';
-    console.log('Form data:', form);
-    console.log('Featured image:', form.featured_image);
+const portfolioForm = ref();
+const submit = async () => {
+    const { valid } = await portfolioForm.value.validate();
 
-    const routeName = portfolio ? 'portfolio.update' : 'portfolio.store';
-    const routeParams = portfolio ? [portfolio.id] : [];
+    if (valid) {
+        console.log(portfolio);
+        // const method = portfolio ? 'patch' : 'post';
+        console.log('Form data:', form);
+        console.log('Featured image:', form.featured_image);
 
-    form[method](route(routeName, routeParams), {
-        // forceFormData: form.featured_image ? true : false,
-        onFinish: () => {
-            console.log('Finish');
-        },
-        onError: (errors) => {
-            console.error('Form submission errors:', errors);
-        },
-    });
+        const routeName = portfolio?.id
+            ? 'portfolio.update'
+            : 'portfolio.store';
+        const routeParams = portfolio ? [portfolio.id] : [];
+        // console.log(form, method, routeName, routeParams);
+
+        form.post(route(routeName, routeParams), {
+            forceFormData: portfolio ? true : false, // Force FormData for updates
+            onFinish: () => {
+                console.log('Finish');
+            },
+            onError: (errors) => {
+                console.error('Form submission errors:', errors);
+            },
+        });
+    }
 };
 
 const bread = computed<BreadcrumbItem[]>(() => {
@@ -134,15 +118,12 @@ const bread = computed<BreadcrumbItem[]>(() => {
     </Head>
     <AuthenticatedLayout :title="`${portfolio ? 'Edit' : 'Create'} Portfolio`">
         <v-container>
-            <v-row> </v-row>
-        </v-container>
-        <v-container>
             <v-row>
                 <v-col cols="12">
                     <breadcrumbs :items="bread" />
                 </v-col>
             </v-row>
-            <form @submit.prevent="submit">
+            <v-form ref="portfolioForm" @submit.prevent="submit">
                 <v-row>
                     <v-col cols="12" md="8">
                         <v-label>Portfolio Title</v-label>
@@ -173,8 +154,24 @@ const bread = computed<BreadcrumbItem[]>(() => {
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-card class="mb-3">
+                            <v-card-text class="pb-0">
+                                <v-label> Work Type </v-label>
+                            </v-card-text>
+                            <v-card-text>
+                                <v-select
+                                    v-model="form.type_id"
+                                    placeholder="Select one work type"
+                                    item-title="title"
+                                    item-value="id"
+                                    :items="types"
+                                    :error-messages="form.errors.type_id"
+                                ></v-select>
+                            </v-card-text>
+                        </v-card>
+                        <v-card class="mb-3">
                             <v-card-title>Featured Image</v-card-title>
                             <v-card-text>
+                                <input type="file" name="" id="" />
                                 <!-- Show existing image if available -->
                                 <div
                                     v-if="
@@ -195,18 +192,8 @@ const bread = computed<BreadcrumbItem[]>(() => {
 
                                 <!-- Show preview of new file -->
                                 <div v-if="form.featured_image" class="mb-3">
-                                    <v-img
-                                        :src="
-                                            <any>(
-                                                useObjectUrl(
-                                                    form.featured_image,
-                                                )
-                                            )
-                                        "
-                                        max-height="200"
-                                        class="mb-2"
-                                        cover
-                                    ></v-img>
+                                    {{ form.featured_image }}
+                                    <v-img :src="form.featured_image"></v-img>
                                     <v-chip size="small" color="primary"
                                         >New Image Selected:
                                         {{ form.featured_image.name }}</v-chip
@@ -247,12 +234,8 @@ const bread = computed<BreadcrumbItem[]>(() => {
                                             title: 'Published',
                                             value: 'published',
                                         },
-                                        {
-                                            title: 'Archived',
-                                            value: 'archived',
-                                        },
                                     ]"
-                                    label="Portfolio Status"
+                                    placeholder="Portfolio Status"
                                 ></v-select>
                             </v-card-text>
                         </v-card>
@@ -279,7 +262,7 @@ const bread = computed<BreadcrumbItem[]>(() => {
                         </v-card>
                     </v-col>
                 </v-row>
-            </form>
+            </v-form>
         </v-container>
     </AuthenticatedLayout>
 </template>

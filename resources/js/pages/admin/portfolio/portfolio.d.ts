@@ -5,6 +5,7 @@ export interface portfolio {
     content: string;
     status: string;
     featured_image?: string;
+    type_id?: number;
 }
 // export interface pagination {
 //     current_page: number;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
+use App\Models\PortfolioType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,13 +13,13 @@ class PortfolioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, Portfolio $portfolio)
     {
         $perPage = $request->input('per_page', 10); // Get per_page from request, default to 10
         $search = $request->input('search', '');
         $sortBy = $request->input('sort_by', []);
 
-        $query = Portfolio::query();
+        $query = $portfolio::query();
 
         if ($search) {
             $query->where('title', 'like', '%'.$search.'%')
@@ -32,7 +33,7 @@ class PortfolioController extends Controller
             $query->orderBy('updated_at', 'desc');
         }
 
-        $paginated = $query->paginate($perPage)->withQueryString();
+        $paginated = $query->paginate($perPage);
 
         return Inertia::render('admin/portfolio/index', [
             'portfolios' => $paginated->items(), // Only portfolio items
@@ -51,9 +52,9 @@ class PortfolioController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(PortfolioType $type)
     {
-        return Inertia::render('admin/portfolio/id');
+        return Inertia::render('admin/portfolio/id', ['types' => $type::all(['id', 'title'])]);
     }
 
     /**
@@ -67,6 +68,7 @@ class PortfolioController extends Controller
             'content' => 'required|string',
             'status' => 'required|string|in:published,draft,archived',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'type_id' => 'required|exists:portfolio_types,id',
         ]);
 
         // Remove featured_image from validated data as we handle it separately
@@ -74,11 +76,11 @@ class PortfolioController extends Controller
 
         $portfolio = Portfolio::create($portfolioData);
 
-        if ($request->hasFile('featured_image')) {
-            $portfolio->clearMediaCollection('featured_image');
-            $portfolio->addMediaFromRequest('featured_image')
-                ->toMediaCollection('featured_image');
-        }
+        // if ($request->hasFile('featured_image')) {
+        //     // $portfolio->clearMediaCollection('featured_image');
+        //     $portfolio->addMediaFromRequest('featured_image')
+        //         ->toMediaCollection('portfolio');
+        // }
 
         return to_route('portfolio.show', [$portfolio])->with('message', 'Successfully created new portfolio.');
     }
@@ -86,34 +88,19 @@ class PortfolioController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Portfolio $portfolio)
+    public function show(Portfolio $portfolio, PortfolioType $type)
     {
-        // Load the portfolio with media
-        $portfolio->load('media');
-
-        // Add featured image URL if exists
-        $portfolioWithImage = $portfolio->toArray();
-        $featuredImage = $portfolio->getFirstMedia('featured_image');
-        $portfolioWithImage['featured_image'] = $featuredImage ? $featuredImage->getUrl() : null;
-
-        return Inertia::render('admin/portfolio/id', ['portfolio' => $portfolioWithImage]);
+        return Inertia::render('admin/portfolio/id', ['portfolio' => $portfolio, 'types' => $type::all(['id', 'title'])]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Portfolio $portfolio)
+    public function edit(Portfolio $portfolio, PortfolioType $type)
     {
-        // Load the portfolio with media
-        $portfolio->load('media');
-
-        // Add featured image URL if exists
-        $portfolioWithImage = $portfolio->toArray();
-        $featuredImage = $portfolio->getFirstMedia('featured_image');
-        $portfolioWithImage['featured_image'] = $featuredImage ? $featuredImage->getUrl() : null;
-
         return Inertia::render('admin/portfolio/id', [
-            'portfolio' => $portfolioWithImage,
+            'portfolio' => $portfolio,
+            'types' => $type::all(['id', 'title']),
         ]);
     }
 
@@ -128,6 +115,7 @@ class PortfolioController extends Controller
             'content' => 'required|string',
             'status' => 'required|string|in:published,draft,archived',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'type_id' => 'required|exists:portfolio_types,id',
         ]);
 
         // Remove featured_image from validated data as we handle it separately
@@ -136,9 +124,8 @@ class PortfolioController extends Controller
         $portfolio->update($portfolioData);
 
         if ($request->hasFile('featured_image')) {
-            $portfolio->clearMediaCollection('featured_image');
             $portfolio->addMediaFromRequest('featured_image')
-                ->toMediaCollection('featured_image');
+                ->toMediaCollection('portfolio');
         }
 
         return to_route('portfolio.show', [$portfolio])->with('message', 'Portfolio updated successfully.');

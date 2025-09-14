@@ -1,13 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import GuestLayout from '@/layouts/GuestLayout.vue';
 import { socials } from '@/utils/socials';
 import { Icon } from '@iconify/vue';
 import { Head } from '@inertiajs/vue3';
-import { defineAsyncComponent } from 'vue';
-
-const GuestLayout = defineAsyncComponent(
-    () => import('@/layouts/GuestLayout.vue'),
-);
 
 const experience = [
     {

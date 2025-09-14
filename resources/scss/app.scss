@@ -12,6 +12,14 @@ body {
     background-color: rgb(var(--v-theme-background));
 }
 
+.use-roboto {
+    font-family: 'Roboto', sans-serif;
+}
+
+.use-ubuntu {
+    font-family: 'Ubuntu', sans-serif;
+}
+
 // Vuetify overrides
 .v-skeleton-loader__image {
     height: 100% !important;

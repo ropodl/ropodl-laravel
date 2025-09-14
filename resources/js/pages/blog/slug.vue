@@ -1,11 +1,14 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import Dynamic from '@/components/shared/dynamic.vue';
+import { Head } from '@inertiajs/vue3';
 import { computed, defineAsyncComponent, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 
 const GuestLayout = defineAsyncComponent(
     () => import('@/layouts/GuestLayout.vue'),
+);
+const Dynamic = defineAsyncComponent(
+    () => import('@/components/shared/dynamic.vue'),
 );
 
 const { xs, sm, md, lg, xlAndUp } = useDisplay();
@@ -21,18 +24,21 @@ const blog = ref({
     date: '',
     slug: 'hi',
     title: 'Asus TUF Gaming F16 (2025) launched in Nepal with RTX 5060 GPU',
-    featured_image: { name: 'test', url: '/media/avatar.webp' },
+    featured_image: '/media/avatar.webp',
     excerpt: 'this is a tests',
-    content: `asdasd`,
+    content: `<p>asdasd</p>`,
 });
 </script>
 <template>
+    <Head>
+        <title>{{ blog.title }}</title>
+    </Head>
     <guest-layout>
         <v-card border="b" rounded="0">
             <v-img
                 cover
                 :height="calculateHeight"
-                :src="blog.featured_image?.url"
+                :src="blog.featured_image"
                 class="d-flex align-end"
             >
                 <template v-if="blog.title">
@@ -40,10 +46,9 @@ const blog = ref({
                         <v-row>
                             <v-col cols="12">
                                 <v-card-title
-                                    class="text-md-h2 text-h4 font-weight-bold px-0"
+                                    class="text-md-h2 text-h4 font-weight-bold px-0 useUbuntu"
                                     style="
                                         line-height: 1.2;
-                                        font-family: 'Ubuntu';
                                         white-space: unset !important;
                                     "
                                 >

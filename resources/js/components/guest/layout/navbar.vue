@@ -2,8 +2,22 @@
 <script setup lang="ts">
 import { pages } from '@/utils/constants';
 import { Icon } from '@iconify/vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+
+const getActive = (to: string) => {
+    const currentUrl =
+        page.url.endsWith('/') && page.url !== '/'
+            ? page.url.slice(0, -1)
+            : page.url;
+    const normalizedTo = to.endsWith('/') && to !== '/' ? to.slice(0, -1) : to;
+    return (
+        currentUrl === normalizedTo || currentUrl.startsWith(normalizedTo + '/')
+    );
+};
 </script>
+
 <template>
     <v-card
         flat
@@ -21,17 +35,13 @@ import { Link } from '@inertiajs/vue3';
         >
             <template v-for="{ icon, title, to } in pages" :key="title">
                 <Link :href="to" as="span" prefetch>
-                    <v-tab
-                        color="brand"
-                        rounded="lg"
-                        :variant="$page.url === to ? 'tonal' : 'text'"
-                    >
+                    <v-tab color="brand" rounded="lg" :active="getActive(to)">
                         <template #prepend>
                             <v-icon start>
-                                <Icon :icon />
+                                <Icon :icon="icon" />
                             </v-icon>
                         </template>
-                        {{ title }}.
+                        {{ title }}
                     </v-tab>
                 </Link>
             </template>

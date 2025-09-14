@@ -4,37 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Portfolio extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['title', 'slug', 'content', 'status'];
+    protected $fillable = ['title', 'slug', 'content', 'status', 'type_id'];
 
-    public function registerMediaConversions(?Media $media = null): void
+    protected $appends = ['featured_image'];
+
+    protected $hidden = ['media'];
+
+    public function type(): BelongsTo
     {
-        $this->addMediaConversion('thumb')
-            ->width(368)
-            ->height(232)
-            ->sharpen(10);
-
-        $this->addMediaConversion('medium')
-            ->width(800)
-            ->height(600)
-            ->sharpen(10);
+        return $this->belongsTo(PortfolioType::class, 'type_id');
     }
 
-    public function registerMediaCollections(): void
+    public function getFeaturedImageAttribute(): string
     {
-        $this->addMediaCollection('featured_image')
-            ->singleFile();
-    }
+        $media = $this->getMedia('portfolio')->first();
 
-    public function getFeaturedImageUrlAttribute()
-    {
-        return $this->getFirstMediaUrl('featured_image');
+        return $media ? $media->getFullUrl() : '';
     }
 }

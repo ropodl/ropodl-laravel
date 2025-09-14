@@ -1,21 +1,38 @@
 <script setup lang="ts">
 import { useNavDrawerStore } from '@/store/admin/nav';
 import { Icon } from '@iconify/vue';
-import { usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
+
+const snackbar = defineAsyncComponent(
+    () => import('@/components/shared/snackbar.vue'),
+);
 
 defineProps<{
     title: string;
 }>();
 
 const { props } = usePage();
+console.log(props);
 
 const nav = useNavDrawerStore();
 const { left, right } = storeToRefs(nav);
 
-const navItems = ref([
-    { icon: 'mdi-home-outline', title: 'Home', to: '/admin/' },
+type navItem = {
+    icon: string;
+    title: string;
+    subtitle?: string;
+    to?: string;
+    subitems?: {
+        title: string;
+        to?: string;
+        grand?: { title: string; to?: string }[];
+    }[];
+};
+
+const navItems = ref<navItem[]>([
+    { icon: 'mdi-home-outline', title: 'Home', to: '/admin' },
     {
         icon: 'mdi-pencil-outline',
         title: 'Blog',
@@ -26,7 +43,6 @@ const navItems = ref([
             { title: 'Categories', to: '/admin/category' },
             { title: 'Tags', to: '/admin/tag' },
             {
-                icon: 'mdi-pencil-outline',
                 title: 'Blog Comments',
                 grand: [{ title: 'All Comments', to: '/admin/blog/comments' }],
             },
@@ -38,53 +54,24 @@ const navItems = ref([
         subitems: [
             { title: 'All Portfolio', to: '/admin/portfolio' },
             { title: 'Add New', to: '/admin/portfolio/create' },
-            { title: 'Work Type', to: '/admin/portfolio/type' },
+            { title: 'Work Type', to: '/admin/portfolio-type' },
         ],
     },
-    {
-        icon: 'mdi-phone-outline',
-        title: 'Contact Request',
-        subtitle: 'Contact and Feedback',
-        to: '/admin/contact-request',
-    },
+    // {
+    //     icon: 'mdi-phone-outline',
+    //     title: 'Contact Request',
+    //     subtitle: 'Contact and Feedback',
+    //     to: '/admin/contact-request',
+    // },
 ]);
-//     {
-//         icon: 'carbon:home',
-//         title: 'Home',
-//         to: '/admin/',
-//     },
-//     {
-//         icon: 'carbon:blog',
-//         title: 'Blogs',
-//         to: '/admin/blog',
-//     },
-//     {
-//         icon: 'carbon:home',
-//         title: 'Portfolios',
-//         to: '/admin/portfolio',
-//     },
-// ]);
 
 const railIcon = computed(() => {
-    return left.value ? 'carbon:side-panel-open' : 'carbon:side-panel-close';
+    return left.value ? 'carbon:side-panel-close' : 'carbon:side-panel-open';
 });
 
 const openHome = () => {
     window.open('/', '_blank');
 };
-
-const open = ref(['/admin/']);
-
-const admins = [
-    ['Management', 'mdi-account-multiple-outline'],
-    ['Settings', 'mdi-cog-outline'],
-];
-const cruds = [
-    ['Create', 'mdi-plus-outline'],
-    ['Read', 'mdi-file-outline'],
-    ['Update', 'mdi-update'],
-    ['Delete', 'mdi-delete'],
-];
 </script>
 
 <template>
@@ -94,16 +81,20 @@ const cruds = [
             density="compact"
             border="b"
             order="0"
-            height="64"
+            height="54"
             color="rgba(var(--v-theme-surface), 0.7)"
             class="px-1 blur-8"
         >
             <v-row align="center">
                 <v-col cols="12" md="4">
                     <v-btn
+                        v-tooltip:right="
+                            `${left ? 'Collapse' : 'Expand'} Navigation`
+                        "
                         icon
-                        height="36"
+                        height="54"
                         variant="text"
+                        rounded="0"
                         @click="left = !left"
                     >
                         <v-icon>
@@ -112,7 +103,7 @@ const cruds = [
                     </v-btn>
                     <v-menu open-on-hover>
                         <template v-slot:activator="{ props }">
-                            <v-btn color="primary" v-bind="props">
+                            <v-btn rounded="0" color="primary" v-bind="props">
                                 Website
                             </v-btn>
                         </template>
@@ -144,66 +135,75 @@ const cruds = [
             </v-row>
         </v-app-bar>
         <v-navigation-drawer
+            v-model="left"
             permanent
-            :rail="left"
             order="1"
             color="rgba(var(--v-theme-surface), 0.7)"
             class="blur-8"
         >
-            {{ open }}
-            <v-list v-model:opened="open" nav density="compact">
+            <v-list nav open-strategy="single" density="compact">
                 <template
                     v-for="{ title, icon, to, subitems } in navItems"
-                    :key="title"
+                    :key="to"
                 >
-                    <v-list-item
-                        prepend-icon="mdi-home"
-                        title="Home"
-                    ></v-list-item>
-
-                    <v-list-group value="Users">
-                        <template v-slot:activator="{ props }">
-                            <v-list-item
-                                v-bind="props"
-                                prepend-icon="mdi-account-circle"
-                                title="Users"
-                            ></v-list-item>
-                        </template>
-
-                        <v-list-group value="Admin">
+                    <template v-if="!subitems">
+                        <v-list-item :title link @click="router.visit(to)">
+                            <template #prepend>
+                                <v-icon>
+                                    <Icon :icon />
+                                </v-icon>
+                            </template>
+                        </v-list-item>
+                    </template>
+                    <template v-else>
+                        <v-list-group>
                             <template v-slot:activator="{ props }">
-                                <v-list-item
-                                    v-bind="props"
-                                    title="Admin"
-                                ></v-list-item>
+                                <v-list-item v-bind="props" :title>
+                                    <template #prepend>
+                                        <v-icon>
+                                            <Icon :icon />
+                                        </v-icon>
+                                    </template>
+                                </v-list-item>
                             </template>
 
-                            <v-list-item
-                                v-for="([title, icon], i) in admins"
+                            <template
+                                v-for="({ title, grand, to }, i) in subitems"
                                 :key="i"
-                                :prepend-icon="icon"
-                                :title="title"
-                                :value="title"
-                            ></v-list-item>
-                        </v-list-group>
+                            >
+                                <template v-if="!grand">
+                                    <v-list-item
+                                        :title
+                                        link
+                                        @click="router.visit(to)"
+                                    ></v-list-item>
+                                </template>
 
-                        <v-list-group value="Actions">
-                            <template v-slot:activator="{ props }">
-                                <v-list-item
-                                    v-bind="props"
-                                    title="Actions"
-                                ></v-list-item>
+                                <!-- <template v-if="grand">
+                                    <v-list-group value="Admin">
+                                        <template v-slot:activator="{ props }">
+                                            <v-list-item
+                                                v-bind="props"
+                                                title="Admin"
+                                            ></v-list-item>
+                                        </template>
+                                        <template
+                                            v-for="({ title }, i) in grand"
+                                            :key="i"
+                                        >
+                                            <v-list-item
+                                                :title
+                                                :value="title"
+                                                style="
+                                                    padding-inline-start: 64px !important;
+                                                "
+                                            ></v-list-item>
+                                        </template>
+                                    </v-list-group>
+                                </template> -->
                             </template>
-
-                            <v-list-item
-                                v-for="([title, icon], i) in cruds"
-                                :key="i"
-                                :prepend-icon="icon"
-                                :title="title"
-                                :value="title"
-                            ></v-list-item>
                         </v-list-group>
-                    </v-list-group>
+                    </template>
                 </template>
             </v-list>
             <template v-slot:append>
@@ -251,6 +251,9 @@ const cruds = [
         <v-main>
             <slot />
         </v-main>
+        <v-layout>
+            <snackbar :props />
+        </v-layout>
         <v-navigation-drawer
             v-model="right"
             order="2"

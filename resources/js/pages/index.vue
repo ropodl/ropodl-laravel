@@ -3,7 +3,7 @@
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { socials } from '@/utils/socials';
 import { Icon } from '@iconify/vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 </script>
 <template>
     <Head>
@@ -11,89 +11,71 @@ import { Head, Link } from '@inertiajs/vue3';
             Fullstack Developer with experience in Vuejs, Laravel, Hono, Express
         </title>
     </Head>
-    <GuestLayout>
-        <section class="mt-16">
-            <v-container>
-                <v-row justify="center">
-                    <v-col
-                        cols="12"
-                        sm="12"
-                        md="8"
-                        lg="6"
-                        class="d-flex flex-column align-center justify-center"
-                    >
-                        <v-avatar size="256" class="mb-n10">
-                            <v-img src="/media/avatar.webp">
-                                <div class="w-100 h-100 gradient"></div>
-                            </v-img>
-                        </v-avatar>
-                        <div
-                            class="text-h3 font-weight-black mb-6 text-center"
-                            style="z-index: 1"
+    <GuestLayout class="mt-16">
+        <v-container>
+            <v-row class="mb-6">
+                <v-col cols="12">
+                    <div class="text-h1 font-weight-bold mb-9">
+                        I’m a fullstack developer with passion to create
+                        <span class="text-primary-darken-2"
+                            >a great experiences</span
                         >
-                            Hi, I'm <br />
-                            Saroj Poudel
-                        </div>
-                        <div class="mb-6 text-center">
-                            I build web stuff in Kathmandu.<br />
-                            Let me show you what I've done and how I do it.
-                        </div>
-                        <v-row justify="center" class="w-100 mb-6">
-                            <v-col cols="12" sm="4" md="4">
-                                <Link href="/blog" as="VBtn">
-                                    <v-btn block color="white" variant="flat">
-                                        Blog
-                                    </v-btn>
-                                </Link>
-                            </v-col>
-                            <v-col cols="12" sm="4" md="4">
-                                <Link
-                                    class="text-decoration-none"
-                                    href="/portfolio"
-                                    as="VBtn"
-                                >
-                                    <v-btn block variant="text">
-                                        Portfolio
-                                        <v-icon end>
-                                            <Icon icon="tabler:arrow-right" />
+                    </div>
+                </v-col>
+            </v-row>
+            <v-row align="center" class="mb-9">
+                <v-col cols="12" md="4">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12" md="8">
+                    <div class="text-h6 font-weight-regular use-ubuntu">
+                        I'm Saroj Poudel, a fullstack developer and designer
+                        living in Kathmandu, Nepal, and I focus on making
+                        digital experiences that are easy to use, enjoyable, and
+                        get the job done.
+                    </div>
+                </v-col>
+            </v-row>
+            <v-row align="center" class="mb-6">
+                <v-col cols="12" md="9">
+                    <ul class="list-none pl-0 d-flex align-center">
+                        <template v-for="{ name, link } in socials" :key="name">
+                            <li class="me-6">
+                                <v-hover #default="{ isHovering, props }">
+                                    <a
+                                        v-bind="props"
+                                        class="text-decoration-none text-primary text-h5"
+                                        :class="
+                                            isHovering
+                                                ? 'text-primary-darken-2'
+                                                : 'text-primary'
+                                        "
+                                        :href="link"
+                                        target="_blank"
+                                    >
+                                        {{ name }}
+                                        <v-icon size="x-small">
+                                            <Icon
+                                                icon="carbon:arrow-up-right"
+                                            />
                                         </v-icon>
-                                    </v-btn>
-                                </Link>
-                            </v-col>
-                        </v-row>
-                        <div>
-                            <ul class="list-none d-flex">
-                                <template
-                                    v-for="{ icon, link } in socials"
-                                    :key="link"
-                                >
-                                    <li>
-                                        <v-btn
-                                            icon
-                                            rounded="lg"
-                                            color="primary"
-                                            variant="text"
-                                            :href="link"
-                                        >
-                                            <v-icon>
-                                                <Icon :icon />
-                                            </v-icon>
-                                        </v-btn>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </section>
+                                    </a>
+                                </v-hover>
+                            </li>
+                        </template>
+                    </ul>
+                </v-col>
+                <v-col cols="12" md="3">
+                    <v-btn block rounded="pill" size="100">
+                        Let's talk
+                        <template #append>
+                            <v-icon end>
+                                <Icon icon="mdi-arrow-right" />
+                            </v-icon>
+                        </template>
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-container>
     </GuestLayout>
 </template>
-<style scoped>
-.gradient {
-    background: linear-gradient(
-        transparent 50%,
-        rgba(var(--v-theme-background))
-    );
-}
-</style>
