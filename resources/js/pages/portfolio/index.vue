@@ -1,9 +1,12 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import { defineAsyncComponent } from 'vue';
 
-// const current = ref(0);
+const card = defineAsyncComponent(
+    () => import('@/components/guest/shared/portfolio/card.vue'),
+);
 
 defineProps<{
     types: {
@@ -18,6 +21,11 @@ defineProps<{
         featured_image: string;
     }[];
 }>();
+
+const calcCol = (i: number) => {
+    console.log(i);
+    return i % 2 === 0 && i !== 0 ? 12 : 6;
+};
 </script>
 <template>
     <Head>
@@ -30,62 +38,13 @@ defineProps<{
         </template>
         <v-container>
             <template v-if="portfolios.length">
-                <v-row>
+                <v-row class="py-16">
                     <template
-                        v-for="{
-                            id,
-                            title,
-                            slug,
-                            featured_image,
-                        } in portfolios"
-                        :key="id"
+                        v-for="(portfolio, i) in portfolios"
+                        :key="portfolio.id"
                     >
-                        <v-col cols="12" md="4">
-                            <v-hover v-slot="{ isHovering, props: hover }">
-                                <Link
-                                    :href="'/portfolio/' + slug"
-                                    class="text-decoration-none"
-                                >
-                                    <v-card
-                                        flat
-                                        max-height="500"
-                                        width="auto"
-                                        rounded="lg"
-                                        v-bind="hover"
-                                    >
-                                        <v-img
-                                            cover
-                                            :aspect-ratio="1"
-                                            width="100"
-                                            height="100"
-                                            class="w-100 h-100 align-end"
-                                            :class="
-                                                isHovering ? 'zoom-image' : ''
-                                            "
-                                            :src="featured_image"
-                                        >
-                                            <v-card
-                                                rounded="0"
-                                                elevation="10"
-                                                class="blur-8 border border-s-0 border-e-0 border-b-0"
-                                                style="
-                                                    background-color: rgba(
-                                                        var(--v-theme-surface),
-                                                        0.8
-                                                    );
-                                                "
-                                            >
-                                                <v-card-text
-                                                    class="text-center"
-                                                    style="white-space: normal"
-                                                >
-                                                    {{ title }}
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-img>
-                                    </v-card>
-                                </Link>
-                            </v-hover>
+                        <v-col class="mb-6" cols="12" :md="calcCol(i)">
+                            <card :portfolio />
                         </v-col>
                     </template>
                 </v-row>

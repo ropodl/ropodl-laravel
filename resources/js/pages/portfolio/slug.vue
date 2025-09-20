@@ -27,7 +27,7 @@ defineProps<{
     <Head>
         <title>{{ portfolio.title }}</title>
     </Head>
-    <guest-layout class="mt-6">
+    <guest-layout class="mt-9">
         <v-container>
             <v-row>
                 <v-col cols="12">

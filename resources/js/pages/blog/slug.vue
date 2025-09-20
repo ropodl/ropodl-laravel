@@ -24,19 +24,8 @@ const blog = ref({
     <Head>
         <title>{{ blog.title }}</title>
     </Head>
-    <guest-layout class="mt-6">
+    <guest-layout class="mt-16">
         <v-container>
-            <v-row>
-                <v-col cols="12">
-                    <v-card border rounded="xl">
-                        <v-img
-                            cover
-                            :aspect-ratio="16 / 8"
-                            :src="blog.featured_image"
-                        ></v-img>
-                    </v-card>
-                </v-col>
-            </v-row>
             <v-row v-if="blog.excerpt">
                 <v-col cols="12" md="12">
                     <v-card-title
@@ -48,6 +37,17 @@ const blog = ref({
                     <div class="text-h6 text-sm-h4 font-weight-light">
                         {{ blog.excerpt }}
                     </div>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card border rounded="xl">
+                        <v-img
+                            cover
+                            :aspect-ratio="16 / 8"
+                            :src="blog.featured_image"
+                        ></v-img>
+                    </v-card>
                 </v-col>
             </v-row>
             <v-row justify="center">

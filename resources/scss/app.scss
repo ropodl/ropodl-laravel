@@ -26,15 +26,15 @@ body {
 }
 
 .v-img:not(.v-parallax) {
-    transition: all 0.2s;
+    transition: all 0.3s;
 
     .v-img__img {
         transform: scale(1);
-        transition: all 0.2s;
+        transition: all 0.3s;
     }
 
     &.zoom-image .v-img__img {
-        transform: scale(1.2);
+        transform: scale(1.1);
     }
 }
 

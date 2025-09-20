@@ -22,8 +22,8 @@ const getActive = (to: string) => {
     <v-card
         flat
         color="rgba(var(--v-theme-surface), 0.7)"
-        rounded="pill"
         location="top"
+        rounded="pill"
         class="position-fixed pa-1 blur-8 top-10 z-1010"
     >
         <v-tabs
@@ -31,13 +31,14 @@ const getActive = (to: string) => {
             density="compact"
             hide-slider
             show-arrows
+            height="50"
             rounded="pill"
         >
             <template v-for="{ icon, title, to } in pages" :key="title">
                 <Link :href="to" as="span" prefetch>
                     <v-tab rounded="pill" :active="getActive(to)">
                         <template #prepend>
-                            <v-icon start>
+                            <v-icon>
                                 <Icon :icon="icon" />
                             </v-icon>
                         </template>

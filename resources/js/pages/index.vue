@@ -17,9 +17,9 @@ import { Head } from '@inertiajs/vue3';
                 <v-col cols="12">
                     <div class="text-h1 font-weight-bold mb-9">
                         I’m a fullstack developer with passion to create
-                        <span class="text-primary-darken-2"
-                            >a great experiences</span
-                        >
+                        <span class="text-primary-darken-2">
+                            a great experiences.
+                        </span>
                     </div>
                 </v-col>
             </v-row>

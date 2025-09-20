@@ -53,6 +53,7 @@ const goTop = () => {
                             <span class="text-primary-darken-2">hello</span
                             >@ropodl.com
                             <v-btn
+                                border
                                 icon
                                 color="primary"
                                 variant="tonal"
@@ -86,6 +87,7 @@ const goTop = () => {
                             >
                                 <li>
                                     <v-btn
+                                        border
                                         icon
                                         rounded="lg"
                                         color="primary"

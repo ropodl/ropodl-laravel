@@ -16,7 +16,6 @@ type blogs = {
     };
 };
 
-const loading = ref(false);
 const blogs = ref<blogs[]>([
     {
         date: '',
@@ -88,7 +87,7 @@ const blogs = ref<blogs[]>([
         </template>
         <v-container>
             <template v-if="blogs.length">
-                <v-row class="mt-8 mb-16">
+                <v-row class="mb-16">
                     <template
                         v-for="(
                             {
@@ -103,7 +102,7 @@ const blogs = ref<blogs[]>([
                     >
                         <template v-if="i === 0">
                             <v-col cols="12">
-                                <v-row>
+                                <v-row class="mb-3">
                                     <v-col cols="12" md="6">
                                         <Link :href="`/blog/${slug}`" as="span">
                                             <v-hover
@@ -111,49 +110,43 @@ const blogs = ref<blogs[]>([
                                             >
                                                 <v-card
                                                     v-bind="props"
-                                                    border="0"
-                                                    rounded="0"
+                                                    border
+                                                    color="white"
+                                                    height="400"
+                                                    rounded="xl"
                                                     :variant="
                                                         isHovering
                                                             ? 'tonal'
                                                             : 'text'
                                                     "
-                                                    color="transparent"
-                                                    class="h-100"
                                                     :to="`/blogs/${slug}`"
                                                 >
-                                                    <v-card
+                                                    <v-img
+                                                        cover
+                                                        :src="url"
+                                                        :alt="name"
+                                                    >
+                                                        <template
+                                                            v-slot:placeholder
+                                                        >
+                                                            <div
+                                                                class="d-flex align-center justify-center fill-height"
+                                                            >
+                                                                <v-skeleton-loader
+                                                                    class="w-100 h-100"
+                                                                    type="image"
+                                                                ></v-skeleton-loader>
+                                                            </div>
+                                                        </template>
+                                                    </v-img>
+                                                    <!-- <v-card
                                                         border
                                                         flat
                                                         height="400"
                                                         class="mb-3"
                                                         rounded="xl"
                                                     >
-                                                        <v-img
-                                                            cover
-                                                            class="w-100 h-100"
-                                                            :class="[
-                                                                isHovering
-                                                                    ? 'active'
-                                                                    : '',
-                                                            ]"
-                                                            :src="url"
-                                                            :alt="name"
-                                                        >
-                                                            <template
-                                                                v-slot:placeholder
-                                                            >
-                                                                <div
-                                                                    class="d-flex align-center justify-center fill-height"
-                                                                >
-                                                                    <v-skeleton-loader
-                                                                        class="w-100 h-100"
-                                                                        type="image"
-                                                                    ></v-skeleton-loader>
-                                                                </div>
-                                                            </template>
-                                                        </v-img>
-                                                    </v-card>
+                                                    </v-card> -->
                                                 </v-card>
                                             </v-hover>
                                         </Link>
@@ -207,56 +200,63 @@ const blogs = ref<blogs[]>([
                         </template>
                         <template v-else>
                             <v-col cols="12" sm="6" md="6" lg="4">
-                                <Link
-                                    class="text-decoration-none"
-                                    :href="`/blog/${slug}`"
-                                >
-                                    <v-card
-                                        border
-                                        flat
-                                        height="400"
-                                        class="mb-3"
-                                        rounded="xl"
+                                <v-hover #default="{ isHovering, props }">
+                                    <Link
+                                        v-bind="props"
+                                        class="text-decoration-none"
+                                        :href="`/blog/${slug}`"
                                     >
-                                        <v-img
-                                            cover
+                                        <v-card
+                                            border
+                                            flat
                                             height="400"
-                                            :src="url"
-                                            :alt="name"
-                                        >
-                                            <template v-slot:placeholder>
-                                                <div
-                                                    class="d-flex align-center justify-center fill-height"
-                                                >
-                                                    <v-skeleton-loader
-                                                        class="w-100 h-100"
-                                                        type="image"
-                                                    ></v-skeleton-loader>
-                                                </div>
-                                            </template>
-                                        </v-img>
-                                    </v-card>
-                                    <v-card
-                                        border="0"
-                                        rounded="0"
-                                        color="transparent"
-                                    >
-                                        <v-card-text
-                                            class="pt-2 text-h6 text-white px-0 pb-0 line-clamp-3"
-                                            style="
-                                                line-height: normal;
-                                                white-space: normal;
+                                            class="mb-3"
+                                            color="white"
+                                            :variant="
+                                                isHovering ? 'tonal' : 'text'
                                             "
+                                            rounded="xl"
                                         >
-                                            {{ title }}
-                                        </v-card-text>
-                                        <v-card-text
-                                            class="text-white text-caption pl-0"
+                                            <v-img
+                                                cover
+                                                height="400"
+                                                :src="url"
+                                                :alt="name"
+                                            >
+                                                <template v-slot:placeholder>
+                                                    <div
+                                                        class="d-flex align-center justify-center fill-height"
+                                                    >
+                                                        <v-skeleton-loader
+                                                            class="w-100 h-100"
+                                                            type="image"
+                                                        ></v-skeleton-loader>
+                                                    </div>
+                                                </template>
+                                            </v-img>
+                                        </v-card>
+                                        <v-card
+                                            border="0"
+                                            rounded="0"
+                                            color="transparent"
                                         >
-                                            April 20, 2025
-                                        </v-card-text>
-                                    </v-card>
-                                </Link>
+                                            <v-card-text
+                                                class="pt-2 text-h6 text-white px-0 pb-0 line-clamp-3"
+                                                style="
+                                                    line-height: normal;
+                                                    white-space: normal;
+                                                "
+                                            >
+                                                {{ title }}
+                                            </v-card-text>
+                                            <v-card-text
+                                                class="text-white text-caption pl-0"
+                                            >
+                                                April 20, 2025
+                                            </v-card-text>
+                                        </v-card>
+                                    </Link>
+                                </v-hover>
                             </v-col>
                         </template>
                     </template>

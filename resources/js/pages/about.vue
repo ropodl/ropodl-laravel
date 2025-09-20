@@ -134,7 +134,7 @@ const backend = [
                         experiences.
                     </div>
                     <Link href="/" as="span">
-                        <v-btn border rounded="pill" width="300" height="100">
+                        <v-btn border rounded="pill" width="230" height="80">
                             Let's talk
                             <template #append>
                                 <v-icon end>
