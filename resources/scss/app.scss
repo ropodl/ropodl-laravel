@@ -1,5 +1,5 @@
 // main.scss
-$heading-font: 'Roboto', sans-serif;
+$heading-font: 'Ubuntu', sans-serif;
 $body-font: 'Ubuntu', sans-serif;
 
 @use 'vuetify' with (
@@ -12,13 +12,13 @@ body {
     background-color: rgb(var(--v-theme-background));
 }
 
-.use-roboto {
-    font-family: 'Roboto', sans-serif;
-}
+// .use-roboto {
+//     font-family: 'Roboto', sans-serif;
+// }
 
-.use-ubuntu {
-    font-family: 'Ubuntu', sans-serif;
-}
+// .use-ubuntu {
+//     font-family: 'Ubuntu', sans-serif;
+// }
 
 // Vuetify overrides
 .v-skeleton-loader__image {

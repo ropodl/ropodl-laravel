@@ -3,7 +3,7 @@
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { socials } from '@/utils/socials';
 import { Icon } from '@iconify/vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 const experience = [
     {
@@ -18,7 +18,7 @@ const experience = [
     },
     {
         title: 'Mid Level Frontend Developer',
-        year: '2024 - Now',
+        year: '2024 - Current',
         desc: 'Aayulogic Pvt. Ltd. @ Chakupat, Lalitpur',
     },
 ];
@@ -105,8 +105,94 @@ const backend = [
     <Head>
         <title>About Me</title>
     </Head>
-    <GuestLayout title="About." class="mt-16">
+    <GuestLayout class="mt-16">
+        <template #title>
+            <span class="text-primary-darken-2">About me,</span> my story and my
+            experience.
+        </template>
         <v-container>
+            <v-row>
+                <v-col cols="12" md="6">
+                    <v-card border rounded="xl">
+                        <v-parallax
+                            cover
+                            height="400"
+                            scale="0.9"
+                            src="/media/full.jpg"
+                        ></v-parallax>
+                    </v-card>
+                </v-col>
+                <v-col
+                    cols="12"
+                    md="6"
+                    class="d-flex flex-column justify-space-between"
+                >
+                    <div class="text-h6 font-weight-light">
+                        As a Senior Designer with over 10 years of experience, I
+                        specialize in creating intuitive and user-centered
+                        interfaces for a wide range of digital products and
+                        experiences.
+                    </div>
+                    <Link href="/" as="span">
+                        <v-btn border rounded="pill" width="300" height="100">
+                            Let's talk
+                            <template #append>
+                                <v-icon end>
+                                    <Icon icon="mdi-arrow-right" />
+                                </v-icon>
+                            </template>
+                        </v-btn>
+                    </Link>
+                </v-col>
+            </v-row>
+            <v-row class="py-16">
+                <v-col cols="12" md="6">
+                    <div
+                        class="text-h3 font-weight-medium position-sticky"
+                        style="top: 50px"
+                    >
+                        My past work<br />experience
+                    </div>
+                </v-col>
+                <v-col cols="12" md="6">
+                    <v-list
+                        bg-color="transparent"
+                        class="py-0"
+                        density="default"
+                    >
+                        <template
+                            v-for="(item, index) in experience"
+                            :key="item.title"
+                        >
+                            <v-list-item :class="index === 0 ? 'mb-6' : 'my-6'">
+                                <v-list-item-title
+                                    class="text-h5 font-weight-medium mb-3"
+                                >
+                                    {{ item.title }}
+                                </v-list-item-title>
+                                <v-list-item-subtitle
+                                    class="text-body-1"
+                                    style="line-height: unset"
+                                >
+                                    {{ item.desc }}
+                                </v-list-item-subtitle>
+                                <template #append>
+                                    {{ item.year }}
+                                </template>
+                            </v-list-item>
+                            <v-divider></v-divider>
+                        </template>
+                    </v-list>
+                </v-col>
+            </v-row>
+            <v-row class="pb-16">
+                <v-col cols="12">
+                    <div class="text-h2 font-weight-medium">
+                        A visual partner for brands, companies, and agencies
+                    </div>
+                </v-col>
+                <v-col> </v-col>
+            </v-row>
             <v-row dense>
                 <v-col cols="12" md="3">
                     <v-row dense>
@@ -338,51 +424,6 @@ const backend = [
                                 <v-divider />
                                 <v-card-text>
                                     Please feel free to contact me.
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                </v-col>
-                <v-col cols="12" md="3">
-                    <v-row dense>
-                        <v-col cols="12" sm="6" md="12">
-                            <v-card border height="637">
-                                <v-card-title>Experience</v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text class="pt-0">
-                                    <v-timeline
-                                        direction="vertical"
-                                        side="end"
-                                        line-thickness="1"
-                                    >
-                                        <v-timeline-item
-                                            size="10"
-                                            density="compact"
-                                            dot-color="brand"
-                                            v-for="{
-                                                year,
-                                                title,
-                                                desc,
-                                            } in experience"
-                                            :key="title"
-                                        >
-                                            <v-card-title
-                                                class="pa-0"
-                                                style="
-                                                    white-space: unset;
-                                                    word-break: normal;
-                                                "
-                                            >
-                                                {{ title }}
-                                            </v-card-title>
-                                            <v-card-subtitle class="px-0">{{
-                                                year
-                                            }}</v-card-subtitle>
-                                            <v-card-text class="px-0 pb-0">{{
-                                                desc
-                                            }}</v-card-text>
-                                        </v-timeline-item>
-                                    </v-timeline>
                                 </v-card-text>
                             </v-card>
                         </v-col>

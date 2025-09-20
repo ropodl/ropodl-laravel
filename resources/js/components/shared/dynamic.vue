@@ -1,11 +1,88 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-defineProps<{
-    content: string;
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import VueEasyLightbox from 'vue-easy-lightbox';
+
+const { content } = defineProps<{
+    content?: string;
 }>();
+
+const contentContainer = ref<HTMLDivElement | null>(null);
+const visible = ref(false);
+const index = ref(0);
+const imgs = ref<{ title?: string; src: string }[]>([]);
+
+// Store original scroll position for restoration
+let originalScrollY = 0;
+
+// Optimized scroll management
+const toggleBodyScroll = (disable: boolean) => {
+    const { body } = document;
+
+    if (disable) {
+        originalScrollY = window.scrollY;
+        body.style.cssText = `
+            position: fixed;
+            top: -${originalScrollY}px;
+            width: 100%;
+            overflow: hidden;
+        `;
+    } else {
+        body.style.cssText = '';
+        window.scrollTo(0, originalScrollY);
+    }
+};
+
+// Watch visibility changes
+watch(visible, toggleBodyScroll);
+
+// Setup images with lightbox functionality
+const setupImages = () => {
+    if (!contentContainer.value) return;
+
+    const images = contentContainer.value.querySelectorAll('img[src]');
+
+    imgs.value = [];
+    images.forEach((element, i) => {
+        const img = element as HTMLImageElement;
+        imgs.value.push({
+            title: img.alt || `Image ${i + 1}`,
+            src: img.src,
+        });
+
+        img.classList.add('pointer');
+        img.onclick = () => {
+            index.value = i;
+            visible.value = true;
+        };
+    });
+};
+
+onMounted(async () => {
+    if (content) {
+        await nextTick();
+        setupImages();
+    }
+});
+
+onUnmounted(() => {
+    if (visible.value) {
+        toggleBodyScroll(false);
+    }
+});
+
+const onHide = () => {
+    visible.value = false;
+};
 </script>
+
 <template>
-    <div v-html="content" class="dynamic-content mb-3"></div>
+    <div
+        v-html="content"
+        ref="contentContainer"
+        class="dynamic-content mb-3"
+    ></div>
+    <vue-easy-lightbox :visible :imgs :index @hide="onHide"></vue-easy-lightbox>
 </template>
 
 <style lang="scss">
@@ -59,7 +136,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
     $padding-bottom: 0
 ) {
     #{$tag} {
-        margin: 2.5em auto 1em;
+        margin: 1em auto 1em;
         max-width: $max-width;
         font-weight: 700;
         line-height: 1.2;
@@ -68,6 +145,10 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
         border-bottom: $border-bottom;
         padding-bottom: $padding-bottom;
     }
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 // --------------------
@@ -91,20 +172,8 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
 
     // Headings
-    @include heading(
-        h1,
-        2.5em,
-        0%,
-        2px solid map.get($colors, border-light),
-        0.4em
-    );
-    @include heading(
-        h2,
-        2em,
-        -10%,
-        1px dashed map.get($colors, border-light),
-        0.3em
-    );
+    @include heading(h1, 2.5em, 0%, none, 0);
+    @include heading(h2, 2em, -10%, none, 0);
     @include heading(h3, 1.7em, -20%);
     @include heading(h4, 1.4em, -30%);
     @include heading(h5, 1.2em, -40%);
@@ -174,6 +243,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
 
     // Media: images, videos, iframes
+
     img,
     video,
     iframe,
@@ -184,6 +254,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
         height: auto;
         margin: 1.5em 0;
         max-width: 100%;
+        border-radius: 10px;
     }
 
     figure {
@@ -192,6 +263,7 @@ $box-shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.4);
         text-align: center;
         img {
             width: 100%;
+            border-radius: 10px;
         }
         figcaption {
             font-size: 0.88em;

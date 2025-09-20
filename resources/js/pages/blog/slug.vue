@@ -1,8 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import { computed, defineAsyncComponent, ref } from 'vue';
-import { useDisplay } from 'vuetify';
+import { defineAsyncComponent, ref } from 'vue';
 
 const GuestLayout = defineAsyncComponent(
     () => import('@/layouts/GuestLayout.vue'),
@@ -11,20 +10,12 @@ const Dynamic = defineAsyncComponent(
     () => import('@/components/shared/dynamic.vue'),
 );
 
-const { xs, sm, md, lg, xlAndUp } = useDisplay();
-const calculateHeight = computed(() => {
-    if (xs.value) return 300;
-    else if (sm.value) return 400;
-    else if (md.value) return 550;
-    else if (lg.value) return 650;
-    else if (xlAndUp.value) return 800;
-    return 700;
-});
 const blog = ref({
     date: '',
     slug: 'hi',
     title: 'Asus TUF Gaming F16 (2025) launched in Nepal with RTX 5060 GPU',
-    featured_image: '/media/avatar.webp',
+    featured_image:
+        'https://images.unsplash.com/photo-1758001606578-09b352df5b85?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     excerpt: 'this is a tests',
     content: `<p>asdasd</p>`,
 });
@@ -33,43 +24,34 @@ const blog = ref({
     <Head>
         <title>{{ blog.title }}</title>
     </Head>
-    <guest-layout>
-        <v-card border="b" rounded="0">
-            <v-img
-                cover
-                :height="calculateHeight"
-                :src="blog.featured_image"
-                class="d-flex align-end"
-            >
-                <template v-if="blog.title">
-                    <v-container>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-card-title
-                                    class="text-md-h2 text-h4 font-weight-bold px-0 useUbuntu"
-                                    style="
-                                        line-height: 1.2;
-                                        white-space: unset !important;
-                                    "
-                                >
-                                    {{ blog.title }}
-                                </v-card-title>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </template>
-            </v-img>
-        </v-card>
+    <guest-layout class="mt-6">
         <v-container>
+            <v-row>
+                <v-col cols="12">
+                    <v-card border rounded="xl">
+                        <v-img
+                            cover
+                            :aspect-ratio="16 / 8"
+                            :src="blog.featured_image"
+                        ></v-img>
+                    </v-card>
+                </v-col>
+            </v-row>
             <v-row v-if="blog.excerpt">
                 <v-col cols="12" md="12">
+                    <v-card-title
+                        class="text-md-h2 text-h4 font-weight-bold px-0 pt-0"
+                        style="line-height: 1.2; white-space: unset !important"
+                    >
+                        {{ blog.title }}
+                    </v-card-title>
                     <div class="text-h6 text-sm-h4 font-weight-light">
                         {{ blog.excerpt }}
                     </div>
                 </v-col>
             </v-row>
             <v-row justify="center">
-                <v-col cols="12" md="12">
+                <v-col cols="12">
                     <template v-if="blog.content">
                         <dynamic :content="blog.content" />
                     </template>

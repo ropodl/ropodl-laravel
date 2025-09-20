@@ -2,9 +2,8 @@
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
-const current = ref(0);
+// const current = ref(0);
 
 defineProps<{
     types: {
@@ -24,49 +23,12 @@ defineProps<{
     <Head>
         <title>Portfolio</title>
     </Head>
-    <GuestLayout title="Portfolio." class="mt-16">
+    <guest-layout class="mt-16">
+        <template #title>
+            Look at what I've been
+            <span class="text-primary-darken-2">working on</span>.
+        </template>
         <v-container>
-            <v-row>
-                <v-col>
-                    <v-card class="pa-1" style="max-width: max-content">
-                        <v-tabs
-                            v-model="current"
-                            color="primary"
-                            density="compact"
-                            hide-slider
-                            show-arrows
-                            rounded="lg"
-                        >
-                            <v-tab
-                                color="brand"
-                                rounded="lg"
-                                :value="0"
-                                :variant="current === 0 ? 'tonal' : 'text'"
-                            >
-                                All
-                            </v-tab>
-                            <template v-if="types.length">
-                                <template
-                                    v-for="{ id, title } in types"
-                                    :key="id"
-                                >
-                                    <v-tab
-                                        color="brand"
-                                        rounded="lg"
-                                        :value="id"
-                                        :variant="
-                                            current === id ? 'tonal' : 'text'
-                                        "
-                                    >
-                                        {{ title }}
-                                    </v-tab>
-                                </template>
-                            </template>
-                        </v-tabs>
-                    </v-card>
-                </v-col>
-            </v-row>
-            {{ portfolios }}
             <template v-if="portfolios.length">
                 <v-row>
                     <template
@@ -129,5 +91,5 @@ defineProps<{
                 </v-row>
             </template>
         </v-container>
-    </GuestLayout>
+    </guest-layout>
 </template>

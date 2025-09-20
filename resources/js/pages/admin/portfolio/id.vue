@@ -3,18 +3,19 @@
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import slugify from '@/utils/slugify';
 import { Head, useForm } from '@inertiajs/vue3';
+import ckeditor from 'ckeditor4-vue';
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { portfolio as port } from './portfolio';
+import type { portfolio } from './portfolio';
 
 const breadcrumbs = defineAsyncComponent(
     () => import('@/components/admin/layout/breadcrumbs.vue'),
 );
-const editor = defineAsyncComponent(
-    () => import('@/components/admin/shared/Editor.vue'),
-);
+// const editor = defineAsyncComponent(
+//     () => import('@/components/admin/shared/Editor.vue'),
+// );
 
 const { portfolio } = defineProps<{
-    portfolio?: port;
+    portfolio?: portfolio;
     types: { id: number; title: string }[];
 }>();
 
@@ -146,10 +147,11 @@ const bread = computed<BreadcrumbItem[]>(() => {
 
                         <v-label>Portfolio Content</v-label>
                         <v-card color="transparent">
-                            <editor
+                            <ckeditor></ckeditor>
+                            <!-- <editor
                                 v-model:content="form.content"
                                 placeholder="eg. Long form content with image, list, etc."
-                            ></editor>
+                            ></editor> -->
                         </v-card>
                     </v-col>
                     <v-col cols="12" md="4">

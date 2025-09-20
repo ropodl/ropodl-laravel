@@ -4,7 +4,7 @@ import GuestLayout from '@/layouts/GuestLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { defineAsyncComponent } from 'vue';
 
-const dynamicContent = defineAsyncComponent(
+const Dynamic = defineAsyncComponent(
     () => import('@/components/shared/dynamic.vue'),
 );
 
@@ -27,24 +27,36 @@ defineProps<{
     <Head>
         <title>{{ portfolio.title }}</title>
     </Head>
-    <GuestLayout class="mt-16">
+    <guest-layout class="mt-6">
         <v-container>
             <v-row>
                 <v-col cols="12">
-                    <v-card class="mb-6">
+                    <v-card border rounded="xl">
                         <v-img
                             cover
-                            height="500"
+                            :aspect-ratio="16 / 8"
                             :src="portfolio.featured_image"
                         ></v-img>
                     </v-card>
-
-                    <v-card-title>{{ portfolio.title }}</v-card-title>
-                    <v-card-text>
-                        <dynamic-content :content="portfolio.content" />
-                    </v-card-text>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card-title
+                        class="text-md-h2 text-h4 font-weight-bold px-0 pt-0"
+                        style="line-height: 1.2; white-space: unset !important"
+                    >
+                        {{ portfolio.title }}
+                    </v-card-title>
+                </v-col>
+            </v-row>
+            <v-row justify="center">
+                <v-col cols="12">
+                    <template v-if="portfolio.content">
+                        <dynamic :content="portfolio.content" />
+                    </template>
                 </v-col>
             </v-row>
         </v-container>
-    </GuestLayout>
+    </guest-layout>
 </template>

@@ -13,7 +13,7 @@ import { Head } from '@inertiajs/vue3';
     </Head>
     <GuestLayout class="mt-16">
         <v-container>
-            <v-row class="mb-6">
+            <v-row class="mb-3">
                 <v-col cols="12">
                     <div class="text-h1 font-weight-bold mb-9">
                         I’m a fullstack developer with passion to create
@@ -23,16 +23,18 @@ import { Head } from '@inertiajs/vue3';
                     </div>
                 </v-col>
             </v-row>
-            <v-row align="center" class="mb-9">
+            <v-row align="center" class="mb-3">
                 <v-col cols="12" md="4">
                     <v-divider></v-divider>
                 </v-col>
                 <v-col cols="12" md="8">
-                    <div class="text-h6 font-weight-regular use-ubuntu">
-                        I'm Saroj Poudel, a fullstack developer and designer
-                        living in Kathmandu, Nepal, and I focus on making
-                        digital experiences that are easy to use, enjoyable, and
-                        get the job done.
+                    <div class="text-h6 font-weight-light">
+                        I’m Saroj Poudel, a full-stack developer and designer
+                        based in Kathmandu, Nepal. I focus on creating digital
+                        experiences that are intuitive, enjoyable, and
+                        effective. Recently, I've been building with Vue,
+                        Strapi, Hono combining design sense with strong
+                        engineering to deliver practical solutions.
                     </div>
                 </v-col>
             </v-row>
@@ -66,7 +68,7 @@ import { Head } from '@inertiajs/vue3';
                     </ul>
                 </v-col>
                 <v-col cols="12" md="3">
-                    <v-btn block rounded="pill" size="100">
+                    <v-btn border block rounded="pill" size="100">
                         Let's talk
                         <template #append>
                             <v-icon end>

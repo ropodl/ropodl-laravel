@@ -2,9 +2,9 @@
 import bottombar from '@/components/guest/layout/bottombar.vue';
 import navbar from '@/components/guest/layout/navbar.vue';
 
-defineProps<{
-    title?: string;
-}>();
+// defineProps<{
+//     title?: string;
+// }>();
 </script>
 
 <template>
@@ -17,18 +17,16 @@ defineProps<{
                     class="overflow-hidden opacity-20 w-100 h-100"
                 />
             </div>
-            <template v-if="title">
-                <v-container>
-                    <v-row>
-                        <v-col
-                            cols="12"
-                            class="text-lg-h1 text-h3 font-weight-bold"
-                        >
-                            {{ title }}
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </template>
+            <v-container>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        class="text-lg-h1 text-h3 font-weight-bold"
+                    >
+                        <slot name="title"></slot>
+                    </v-col>
+                </v-row>
+            </v-container>
             <slot />
         </v-main>
         <bottombar />
