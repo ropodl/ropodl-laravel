@@ -49,6 +49,11 @@ const calcCol = (i: number) => {
                     </template>
                 </v-row>
             </template>
+            <template v-else>
+                <v-alert border color="transparent">
+                    Sorry no content available.
+                </v-alert>
+            </template>
         </v-container>
     </guest-layout>
 </template>

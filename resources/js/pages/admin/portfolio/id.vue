@@ -74,16 +74,10 @@ const submit = async () => {
     const { valid } = await portfolioForm.value.validate();
 
     if (valid) {
-        console.log(portfolio);
-        // const method = portfolio ? 'patch' : 'post';
-        console.log('Form data:', form);
-        console.log('Featured image:', form.featured_image);
-
         const routeName = portfolio?.id
             ? 'portfolio.update'
             : 'portfolio.store';
         const routeParams = portfolio ? [portfolio.id] : [];
-        // console.log(form, method, routeName, routeParams);
 
         form.post(route(routeName, routeParams), {
             forceFormData: portfolio ? true : false, // Force FormData for updates
