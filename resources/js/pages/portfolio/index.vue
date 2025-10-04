@@ -16,6 +16,7 @@ defineProps<{
     portfolios: {
         id: number;
         title: string;
+        subtitle: string;
         slug: string;
         status: string;
         featured_image: string;
@@ -23,8 +24,7 @@ defineProps<{
 }>();
 
 const calcCol = (i: number) => {
-    console.log(i);
-    return i % 2 === 0 && i !== 0 ? 12 : 6;
+    return (i + 1) % 3 ? 6 : 12;
 };
 </script>
 <template>

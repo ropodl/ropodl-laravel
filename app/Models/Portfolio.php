@@ -12,7 +12,7 @@ class Portfolio extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['title', 'slug', 'content', 'status', 'type_id'];
+    protected $fillable = ['title', 'subtitle', 'slug', 'content', 'status', 'portfolio_type_id'];
 
     protected $appends = ['featured_image'];
 
@@ -20,7 +20,7 @@ class Portfolio extends Model implements HasMedia
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(PortfolioType::class, 'type_id');
+        return $this->belongsTo(PortfolioType::class, 'portfolio_type_id');
     }
 
     public function getFeaturedImageAttribute(): string

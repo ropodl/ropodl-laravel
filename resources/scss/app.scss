@@ -4,21 +4,15 @@ $body-font: 'Ubuntu', sans-serif;
 
 @use 'vuetify' with (
     $heading-font-family: $heading-font,
-    $body-font-family: $body-font
+    $body-font-family: $body-font,
+    $layers: true
 );
 
 // Global
 body {
     background-color: rgb(var(--v-theme-background));
+    font-family: $body-font;
 }
-
-// .use-roboto {
-//     font-family: 'Roboto', sans-serif;
-// }
-
-// .use-ubuntu {
-//     font-family: 'Ubuntu', sans-serif;
-// }
 
 // Vuetify overrides
 .v-skeleton-loader__image {

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Portfolio;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PortfolioType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => 'admin123',
         ]);
 
-        // Portfolio::factory(100)->create();
+        PortfolioType::factory(1)->create();
+        Portfolio::factory(100)->create();
     }
 }

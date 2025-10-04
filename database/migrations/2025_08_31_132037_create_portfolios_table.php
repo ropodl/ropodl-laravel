@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('slug');
+            $table->string('subtitle');
+            $table->string('slug')->unique();
             $table->longText('content')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
-            $table->foreignId('type_id')
+            $table->enum('status', ['draft', 'published'])->default('draft')->index();
+            $table->foreignId('portfolio_type_id')
                 ->constrained('portfolio_types')
-                ->cascadeOnDelete();
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

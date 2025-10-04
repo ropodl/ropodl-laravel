@@ -5,6 +5,10 @@ import { Icon } from '@iconify/vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+defineProps<{
+    media: any;
+}>();
+
 type blogs = {
     date: string;
     slug: string;
@@ -87,7 +91,14 @@ const blogs = ref<blogs[]>([
         </template>
         <v-container>
             <template v-if="blogs.length">
-                <v-row class="mb-16">
+                <v-row
+                    v-gsap.whenVisible.stagger.from="{
+                        opacity: 0,
+                        y: 50,
+                        stagger: 0.4,
+                    }"
+                    class="mb-16"
+                >
                     <template
                         v-for="(
                             {

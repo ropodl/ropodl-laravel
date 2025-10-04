@@ -18,9 +18,11 @@ class PortfolioFactory extends Factory
     {
         return [
             'title' => fake()->name(),
+            'subtitle' => fake()->name(),
             'slug' => fake()->slug(),
             'content' => fake()->text(),
-            'status' => 'published'
+            'portfolio_type_id' => '1',
+            'status' => 'draft',
         ];
     }
 }

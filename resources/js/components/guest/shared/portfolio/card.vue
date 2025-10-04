@@ -7,6 +7,7 @@ defineProps<{
     portfolio: {
         id: number;
         title: string;
+        subtitle: string;
         slug: string;
         status: string;
         featured_image: string;
@@ -37,7 +38,7 @@ defineProps<{
                     class="w-100 h-100 align-end"
                     :src="portfolio.featured_image"
                 >
-                    <v-card
+                    <!-- <v-card
                         rounded="0"
                         elevation="10"
                         class="blur-8 border border-s-0 border-e-0 border-b-0"
@@ -51,18 +52,18 @@ defineProps<{
                         >
                             {{ portfolio.title }}
                         </v-card-text>
-                    </v-card>
+                    </v-card> -->
                 </v-img>
             </v-card>
         </Link>
         <v-card border="0" color="transparent" class="text-decoration-none">
             <v-list-item class="px-0">
-                <v-list-item-title class="text-h5 mb-3 font-weight-bold"
-                    >Title</v-list-item-title
-                >
-                <v-list-item-subtitle class="text-body-1"
-                    >Subtitle</v-list-item-subtitle
-                >
+                <v-list-item-title class="text-h5 mb-3 font-weight-bold">
+                    {{ portfolio.title }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="text-body-1">
+                    {{ portfolio.subtitle }}
+                </v-list-item-subtitle>
                 <template #append>
                     <Link :href="'/portfolio/' + portfolio.slug" as="span">
                         <v-btn

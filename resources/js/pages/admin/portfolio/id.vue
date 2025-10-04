@@ -2,19 +2,19 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import slugify from '@/utils/slugify';
-import { Head, useForm } from '@inertiajs/vue3';
-import ckeditor from 'ckeditor4-vue';
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import { useObjectUrl } from '@vueuse/core';
+import { computed, defineAsyncComponent, ref, Ref, watch } from 'vue';
 import type { portfolio } from './portfolio';
 
 const breadcrumbs = defineAsyncComponent(
     () => import('@/components/admin/layout/breadcrumbs.vue'),
 );
-// const editor = defineAsyncComponent(
-//     () => import('@/components/admin/shared/Editor.vue'),
-// );
+const editor = defineAsyncComponent(
+    () => import('@/components/admin/shared/Editor.vue'),
+);
 
-const { portfolio } = defineProps<{
+const { portfolio, types } = defineProps<{
     portfolio?: portfolio;
     types: { id: number; title: string }[];
 }>();
@@ -26,11 +26,8 @@ const form = useForm({
     content: portfolio?.content ?? '',
     featured_image: portfolio?.featured_image ?? (null as File | null),
     status: portfolio?.status ?? 'draft',
-    type_id: portfolio?.type_id ?? null,
+    portfolio_type_id: portfolio?.portfolio_type_id ?? null,
 });
-
-// Keep track of existing image URL for display
-const existingImageUrl = ref(portfolio?.featured_image ?? '');
 
 watch(
     () => form.title,
@@ -59,14 +56,13 @@ const rules = {
     featured_image: [
         (v?: File[]) => {
             if (!v || v.length === 0) return true;
+            const file = v[0];
+            if (file && file.size > 5120 * 1024) {
+                return 'File size must be less than 5MB';
+            }
             return true;
         },
     ],
-};
-
-// Fixed file change handler
-const handleFileChange = (file: File | null) => {
-    form.featured_image = file;
 };
 
 const portfolioForm = ref();
@@ -80,7 +76,8 @@ const submit = async () => {
         const routeParams = portfolio ? [portfolio.id] : [];
 
         form.post(route(routeName, routeParams), {
-            forceFormData: portfolio ? true : false, // Force FormData for updates
+            forceFormData: true, // Always force FormData when dealing with files
+            preserveScroll: false,
             onFinish: () => {
                 console.log('Finish');
             },
@@ -104,6 +101,43 @@ const bread = computed<BreadcrumbItem[]>(() => {
                 : '/admin/portfolio/create',
         },
     ];
+});
+
+const fileSelected = ref(null as File | null);
+const filePreview = ref<Ref | null>(null);
+const uploadFile = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        fileSelected.value = target.files[0];
+        filePreview.value = useObjectUrl(target.files[0]);
+        form.featured_image = fileSelected.value;
+    }
+};
+
+const removeImage = () => {
+    filePreview.value = null;
+    fileSelected.value = null;
+    form.featured_image = null;
+};
+
+const fileBrowser = ref<HTMLInputElement | null>(null);
+const fileSelector = () => {
+    if (fileBrowser.value) {
+        fileBrowser.value.click();
+    }
+};
+
+const showImage = computed(() => {
+    if (portfolio?.id && portfolio.featured_image) return true;
+    else if (filePreview.value) return true;
+    else return false;
+});
+
+const showWhichImage = computed(() => {
+    if (filePreview.value) return filePreview.value.value;
+    else if (portfolio?.id && portfolio.featured_image)
+        return form.featured_image;
+    else return false;
 });
 </script>
 
@@ -141,11 +175,7 @@ const bread = computed<BreadcrumbItem[]>(() => {
 
                         <v-label>Portfolio Content</v-label>
                         <v-card color="transparent">
-                            <ckeditor></ckeditor>
-                            <!-- <editor
-                                v-model:content="form.content"
-                                placeholder="eg. Long form content with image, list, etc."
-                            ></editor> -->
+                            <editor v-model:content="form.content" />
                         </v-card>
                     </v-col>
                     <v-col cols="12" md="4">
@@ -153,77 +183,29 @@ const bread = computed<BreadcrumbItem[]>(() => {
                             <v-card-text class="pb-0">
                                 <v-label> Work Type </v-label>
                             </v-card-text>
-                            <v-card-text>
+                            <v-card-text class="pt-0">
                                 <v-select
-                                    v-model="form.type_id"
+                                    v-model="form.portfolio_type_id"
                                     placeholder="Select one work type"
                                     item-title="title"
                                     item-value="id"
+                                    hide-details
                                     :items="types"
-                                    :error-messages="form.errors.type_id"
+                                    :error-messages="
+                                        form.errors.portfolio_type_id
+                                    "
                                 ></v-select>
                             </v-card-text>
                         </v-card>
+
                         <v-card class="mb-3">
-                            <v-card-title>Featured Image</v-card-title>
-                            <v-card-text>
-                                <input type="file" name="" id="" />
-                                <!-- Show existing image if available -->
-                                <div
-                                    v-if="
-                                        existingImageUrl && !form.featured_image
-                                    "
-                                    class="mb-3"
-                                >
-                                    <v-img
-                                        :src="existingImageUrl"
-                                        max-height="200"
-                                        class="mb-2"
-                                        cover
-                                    ></v-img>
-                                    <v-chip size="small" color="success"
-                                        >Current Image</v-chip
-                                    >
-                                </div>
-
-                                <!-- Show preview of new file -->
-                                <div v-if="form.featured_image" class="mb-3">
-                                    {{ form.featured_image }}
-                                    <v-img :src="form.featured_image"></v-img>
-                                    <v-chip size="small" color="primary"
-                                        >New Image Selected:
-                                        {{ form.featured_image.name }}</v-chip
-                                    >
-                                </div>
-
-                                <!-- File input with proper v-model handling -->
-                                <v-file-input
-                                    :model-value="
-                                        form.featured_image
-                                            ? [form.featured_image]
-                                            : []
-                                    "
-                                    label="Choose featured image"
-                                    accept="image/*"
-                                    prepend-icon="mdi-camera"
-                                    :rules="rules.featured_image"
-                                    :error-messages="form.errors.featured_image"
-                                    @update:model-value="handleFileChange"
-                                    @click:clear="handleFileChange(null)"
-                                ></v-file-input>
-
-                                <v-card-subtitle class="px-0 text-caption">
-                                    Accepted formats: JPEG, PNG, GIF, WebP (Max:
-                                    5MB)
-                                </v-card-subtitle>
+                            <v-card-text class="pb-0">
+                                <v-label> Status </v-label>
                             </v-card-text>
-                        </v-card>
-
-                        <v-card>
-                            <v-card-title>Status</v-card-title>
-                            <v-card-text>
+                            <v-card-text class="pt-0">
                                 <v-select
                                     v-model="form.status"
+                                    hide-details
                                     :items="[
                                         { title: 'Draft', value: 'draft' },
                                         {
@@ -236,8 +218,103 @@ const bread = computed<BreadcrumbItem[]>(() => {
                             </v-card-text>
                         </v-card>
 
-                        <v-card class="mt-3">
-                            <v-card-title>Actions</v-card-title>
+                        <v-card class="mb-3">
+                            <v-card-text
+                                class="pb-0 d-flex align-center justify-space-between"
+                            >
+                                <v-label> Featured Image </v-label>
+                            </v-card-text>
+                            <v-card-text class="pt-0">
+                                <v-card border height="200">
+                                    <template
+                                        v-if="
+                                            portfolio?.featured_image ||
+                                            filePreview
+                                        "
+                                    >
+                                    </template>
+
+                                    <template v-if="showImage">
+                                        <v-card-text class="pa-0">
+                                            <v-hover
+                                                #default="{ isHovering, props }"
+                                            >
+                                                <v-img
+                                                    v-bind="props"
+                                                    cover
+                                                    height="200"
+                                                    :src="showWhichImage"
+                                                >
+                                                    <v-fade-transition>
+                                                        <template
+                                                            v-if="isHovering"
+                                                        >
+                                                            <div
+                                                                class="w-100 h-100 d-flex align-center justify-center"
+                                                                style="
+                                                                    background-color: rgba(
+                                                                        0,
+                                                                        0,
+                                                                        0,
+                                                                        0.5
+                                                                    );
+                                                                "
+                                                            >
+                                                                <v-btn
+                                                                    v-tooltip="
+                                                                        'Remove Featured Image'
+                                                                    "
+                                                                    rounded="circle"
+                                                                    icon="carbon:close"
+                                                                    @click="
+                                                                        removeImage
+                                                                    "
+                                                                ></v-btn>
+                                                            </div>
+                                                        </template>
+                                                    </v-fade-transition>
+                                                </v-img>
+                                            </v-hover>
+                                        </v-card-text>
+                                    </template>
+                                    <template v-else>
+                                        <v-card-text
+                                            class="pt-0 w-100 h-100 d-flex align-center justify-center flex-column"
+                                        >
+                                            <div
+                                                class="d-flex align-center justify-center flex-column mb-3"
+                                            >
+                                                <v-icon
+                                                    size="32"
+                                                    class="mb-2"
+                                                    icon="carbon:cloud-upload"
+                                                ></v-icon>
+                                                <div
+                                                    class="text-h6 font-weight-medium"
+                                                >
+                                                    Select Featured image
+                                                </div>
+                                            </div>
+                                            <input
+                                                ref="fileBrowser"
+                                                id="file-browser"
+                                                class="d-none"
+                                                type="file"
+                                                @input="uploadFile"
+                                            />
+                                            <v-btn border @click="fileSelector">
+                                                Browse
+                                            </v-btn>
+                                        </v-card-text>
+                                    </template>
+                                </v-card>
+                            </v-card-text>
+                        </v-card>
+
+                        <v-card class="mb-3">
+                            <v-card-text class="pb-0">
+                                <v-label> Actions </v-label>
+                            </v-card-text>
                             <v-card-actions>
                                 <v-btn
                                     type="submit"
@@ -250,7 +327,7 @@ const bread = computed<BreadcrumbItem[]>(() => {
                                 </v-btn>
                                 <v-btn
                                     variant="outlined"
-                                    @click="$inertia.visit('/admin/portfolio')"
+                                    @click="router.visit('/admin/portfolio')"
                                 >
                                     Cancel
                                 </v-btn>
@@ -262,3 +339,61 @@ const bread = computed<BreadcrumbItem[]>(() => {
         </v-container>
     </AuthenticatedLayout>
 </template>
+
+<!-- <v-card class="mb-3">
+                                <v-card-text class="pb-0">
+                                    <v-label> Featured Image </v-label>
+                                </v-card-text>
+                                <v-card-text>
+                                    Show existing image if available and no new image selected
+                                    <div
+                                        v-if="existingImageUrl && !imagePreview"
+                                        class="mb-3"
+                                    >
+                                        <v-img
+                                            :src="existingImageUrl"
+                                            max-height="200"
+                                            class="mb-2"
+                                            cover
+                                        ></v-img>
+                                        <v-chip size="small" color="success"
+                                            >Current Image</v-chip
+                                        >
+                                    </div>
+
+                                    Show preview of new file
+                                    <div v-if="imagePreview" class="mb-3">
+                                        <v-img
+                                            :src="imagePreview"
+                                            max-height="200"
+                                            class="mb-2"
+                                            cover
+                                        ></v-img>
+                                        <v-chip size="small" color="primary">
+                                            New Image:
+                                            {{ form.featured_image?.name }}</v-chip
+                                        >
+                                    </div>
+
+                                    File input with proper v-model handling
+                                    <v-file-input
+                                        :model-value="
+                                            form.featured_image
+                                                ? [form.featured_image]
+                                                : []
+                                        "
+                                        label="Choose featured image"
+                                        accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                                        prepend-icon="mdi-camera"
+                                        :rules="rules.featured_image"
+                                        :error-messages="form.errors.featured_image"
+                                        @update:model-value="<any>handleFileChange"
+                                        @click:clear="handleFileChange(null)"
+                                    ></v-file-input>
+
+                                    <v-card-subtitle class="px-0 text-caption">
+                                        Accepted formats: JPEG, PNG, GIF, WebP (Max:
+                                        5MB)
+                                    </v-card-subtitle>
+                                </v-card-text>
+                            </v-card> -->

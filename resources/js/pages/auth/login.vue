@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 defineProps<{
@@ -29,15 +29,15 @@ const submit = () => {
 <template>
     <Head title="Log in" />
     <GuestLayout title="Log In." class="mt-16">
+        <template #title> Log In. </template>
         <v-container>
-            <v-row>
+            <v-row class="pb-16">
                 <v-col cols="12" md="4" class="fill-height">
-                    <div
-                        v-if="status"
-                        class="mb-4 text-sm font-medium text-green-600"
-                    >
-                        {{ status }}
-                    </div>
+                    <template v-if="status">
+                        <div class="mb-4 text-sm font-medium text-green-600">
+                            {{ status }}
+                        </div>
+                    </template>
 
                     <form @submit.prevent="submit">
                         <v-text-field
@@ -70,14 +70,14 @@ const submit = () => {
                             label="Remember Me"
                         ></v-checkbox>
                         <div class="d-flex align-center justify-space-between">
-                            <template v-if="canResetPassword">
+                            <!-- <template v-if="canResetPassword">
                                 <Link
                                     :href="route('password.request')"
                                     as="VBtn"
                                 >
                                     <v-btn> Forgot your password? </v-btn>
                                 </Link>
-                            </template>
+                            </template> -->
 
                             <v-btn
                                 color="primary"

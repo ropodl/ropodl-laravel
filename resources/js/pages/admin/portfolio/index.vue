@@ -1,12 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import { right } from '@/composables/nav';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
-import { useNavDrawerStore } from '@/store/admin/nav';
 import { itemsPerPage } from '@/utils/constants';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
 import { useDebounceFn } from '@vueuse/core';
-import { storeToRefs } from 'pinia';
 import { defineAsyncComponent, ref } from 'vue';
 import type { portfolio } from './portfolio';
 
@@ -20,13 +19,9 @@ const { portfolios, search, pagination } = defineProps<{
     pagination: pagination;
 }>();
 
-const nav = useNavDrawerStore();
-const { right } = storeToRefs(nav);
-
 const searchQuery = ref(search);
 const paginate = ref(pagination);
 
-// Headers for the v-data-table-server
 const headers = [
     { title: 'Title', key: 'title', sortable: true },
     { title: 'Status', key: 'status', sortable: true },
@@ -45,10 +40,9 @@ const getUpdate = (options: { key: string; order?: boolean }[]) => {
     router.get(route('portfolio.index'), params, {
         showProgress: true,
         async: true,
-        preserveState: false,
-        preserveScroll: false,
-        replace: true,
-        only: ['portfolios', 'pagination'],
+        preserveState: true,
+        preserveScroll: true,
+        replace: false,
     });
 };
 
@@ -114,8 +108,9 @@ const bread = ref<BreadcrumbItem[]>([
                             flat
                             color="primary"
                             @click="router.visit('/admin/portfolio/create')"
-                            >Add New</v-btn
                         >
+                            Add New
+                        </v-btn>
                     </div>
                 </v-col>
             </v-row>

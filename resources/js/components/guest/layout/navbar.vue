@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { pages } from '@/utils/constants';
-import { Icon } from '@iconify/vue';
+// import { Icon } from '@iconify/vue';
 import { Link, usePage } from '@inertiajs/vue3';
 
 const page = usePage();
@@ -38,9 +38,8 @@ const getActive = (to: string) => {
                 <Link :href="to" as="span" prefetch>
                     <v-tab rounded="pill" :active="getActive(to)">
                         <template #prepend>
-                            <v-icon>
-                                <Icon :icon="icon" />
-                            </v-icon>
+                            <v-icon :icon> </v-icon>
+                            <!-- <Icon ="icon" /> -->
                         </template>
                         {{ title }}
                     </v-tab>

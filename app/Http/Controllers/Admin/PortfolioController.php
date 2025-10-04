@@ -68,7 +68,7 @@ class PortfolioController extends Controller
             'content' => 'required|string',
             'status' => 'required|string|in:published,draft,archived',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
-            'type_id' => 'required|exists:portfolio_types,id',
+            'portfolio_type_id' => 'required|exists:portfolio_types,id',
         ]);
 
         // Remove featured_image from validated data as we handle it separately
@@ -109,26 +109,36 @@ class PortfolioController extends Controller
      */
     public function update(Request $request, Portfolio $portfolio)
     {
-        $validated = $request->validate([
+        $rules = [
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:portfolios,slug,'.$portfolio->id,
             'content' => 'required|string',
             'status' => 'required|string|in:published,draft,archived',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
-            'type_id' => 'required|exists:portfolio_types,id',
-        ]);
+            'portfolio_type_id' => 'required|exists:portfolio_types,id',
+        ];
+
+        // Only add featured_image validation if a file is present
+        if ($request->hasFile('featured_image')) {
+            $rules['featured_image'] = 'nullable|file|image|mimes:jpeg,png,jpg,gif,webp|max:5120';
+        }
+
+        $validated = $request->validate($rules);
 
         // Remove featured_image from validated data as we handle it separately
         $portfolioData = collect($validated)->except('featured_image')->toArray();
 
-        $portfolio->update($portfolioData);
+        if ($request->hasFile('featured_image') && $request->file('featured_image')->isValid()) {
+            // Only clear if media exists
+            $portfolio->getMedia('portfolio')->each->delete();
 
-        if ($request->hasFile('featured_image')) {
+            // Add new image
             $portfolio->addMediaFromRequest('featured_image')
                 ->toMediaCollection('portfolio');
         }
 
-        return to_route('portfolio.show', [$portfolio])->with('message', 'Portfolio updated successfully.');
+        $portfolio->update($portfolioData);
+
+        return to_route('portfolio.show', [$portfolio, 'message' => 'Portfolio updated successfully.']);
     }
 
     /**

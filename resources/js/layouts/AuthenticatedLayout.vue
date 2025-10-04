@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useNavDrawerStore } from '@/store/admin/nav';
+// import { useNavDrawerStore } from '@/store/admin/nav';
 import { Icon } from '@iconify/vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { storeToRefs } from 'pinia';
+// import { storeToRefs } from 'pinia';
+import { left, right } from '@/composables/nav';
 import { computed, defineAsyncComponent, ref } from 'vue';
 
 const snackbar = defineAsyncComponent(
@@ -14,10 +15,9 @@ defineProps<{
 }>();
 
 const { props } = usePage();
-console.log(props);
 
-const nav = useNavDrawerStore();
-const { left, right } = storeToRefs(nav);
+// const nav = useNavDrawerStore();
+// const { left, right } = storeToRefs(nav);
 
 type navItem = {
     icon: string;
@@ -32,9 +32,9 @@ type navItem = {
 };
 
 const navItems = ref<navItem[]>([
-    { icon: 'mdi-home-outline', title: 'Home', to: '/admin' },
+    { icon: 'carbon:home', title: 'Home', to: '/admin' },
     {
-        icon: 'mdi-pencil-outline',
+        icon: 'carbon:edit',
         title: 'Blog',
         subtitle: 'Content And Portfolio',
         subitems: [
@@ -49,7 +49,7 @@ const navItems = ref<navItem[]>([
         ],
     },
     {
-        icon: 'mdi-image-outline',
+        icon: 'carbon:image',
         title: 'Portfolio',
         subitems: [
             { title: 'All Portfolio', to: '/admin/portfolio' },
@@ -147,7 +147,11 @@ const openHome = () => {
                     :key="to"
                 >
                     <template v-if="!subitems">
-                        <v-list-item :title link @click="router.visit(to)">
+                        <v-list-item
+                            :title
+                            link
+                            @click="router.visit(<string>to)"
+                        >
                             <template #prepend>
                                 <v-icon>
                                     <Icon :icon />
@@ -175,7 +179,7 @@ const openHome = () => {
                                     <v-list-item
                                         :title
                                         link
-                                        @click="router.visit(to)"
+                                        @click="router.visit(<string>to)"
                                     ></v-list-item>
                                 </template>
 

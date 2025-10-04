@@ -23,65 +23,65 @@ const experience = [
     },
 ];
 
-const software = [
-    {
-        text: 'Adobe Illustrator',
-        icon: 'iconoir:adobe-illustrator',
-    },
-    {
-        text: 'Adobe Photoshop',
-        icon: 'iconoir:adobe-photoshop',
-    },
-    {
-        text: 'Adobe XD',
-        icon: 'iconoir:adobe-xd',
-    },
-    {
-        text: 'Adobe Premiere Pro',
-        icon: 'basil:adobe-premiere-outline',
-    },
-    {
-        text: 'MS Office',
-        icon: 'simple-icons:microsoftoffice',
-    },
-    {
-        text: 'VS Code',
-        icon: 'tabler:brand-vscode',
-    },
-    {
-        text: 'Linux',
-        icon: 'carbon:linux',
-    },
-];
+// const software = [
+//     {
+//         text: 'Adobe Illustrator',
+//         icon: 'iconoir:adobe-illustrator',
+//     },
+//     {
+//         text: 'Adobe Photoshop',
+//         icon: 'iconoir:adobe-photoshop',
+//     },
+//     {
+//         text: 'Adobe XD',
+//         icon: 'iconoir:adobe-xd',
+//     },
+//     {
+//         text: 'Adobe Premiere Pro',
+//         icon: 'basil:adobe-premiere-outline',
+//     },
+//     {
+//         text: 'MS Office',
+//         icon: 'simple-icons:microsoftoffice',
+//     },
+//     {
+//         text: 'VS Code',
+//         icon: 'tabler:brand-vscode',
+//     },
+//     {
+//         text: 'Linux',
+//         icon: 'carbon:linux',
+//     },
+// ];
 
-const frontend = [
-    {
-        text: 'VueJS',
-        icon: 'fa6-brands:vuejs',
-    },
-    {
-        text: 'Vuetify',
-        icon: 'mdi:vuetify',
-    },
-    {
-        text: 'NuxtJS',
-        icon: 'tabler:brand-nuxt',
-    },
-];
-const backend = [
-    {
-        text: 'ExpressJs',
-        icon: 'simple-icons:express',
-    },
-    {
-        text: 'MongoDB',
-        icon: 'tabler:brand-mongodb',
-    },
-    {
-        text: 'SupaBase',
-        icon: 'tabler:brand-supabase',
-    },
-];
+// const frontend = [
+//     {
+//         text: 'VueJS',
+//         icon: 'fa6-brands:vuejs',
+//     },
+//     {
+//         text: 'Vuetify',
+//         icon: 'mdi:vuetify',
+//     },
+//     {
+//         text: 'NuxtJS',
+//         icon: 'tabler:brand-nuxt',
+//     },
+// ];
+// const backend = [
+//     {
+//         text: 'ExpressJs',
+//         icon: 'simple-icons:express',
+//     },
+//     {
+//         text: 'MongoDB',
+//         icon: 'tabler:brand-mongodb',
+//     },
+//     {
+//         text: 'SupaBase',
+//         icon: 'tabler:brand-supabase',
+//     },
+// ];
 
 const items = ref([
     {

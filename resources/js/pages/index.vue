@@ -32,8 +32,8 @@ import { Head } from '@inertiajs/vue3';
                         I’m Saroj Poudel, a full-stack developer and designer
                         based in Kathmandu, Nepal. I focus on creating digital
                         experiences that are intuitive, enjoyable, and
-                        effective. Recently, I've been building with Vue,
-                        Strapi, Hono combining design sense with strong
+                        effective. I've been building things with Laravel, Vue,
+                        Strapi, HonoJs combining design sense with strong
                         engineering to deliver practical solutions.
                     </div>
                 </v-col>
@@ -46,7 +46,7 @@ import { Head } from '@inertiajs/vue3';
                                 <v-hover #default="{ isHovering, props }">
                                     <a
                                         v-bind="props"
-                                        class="text-decoration-none text-primary text-h5"
+                                        class="text-decoration-none text-primary text-h6 font-weight-regular"
                                         :class="
                                             isHovering
                                                 ? 'text-primary-darken-2'
