@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import slugify from '@/utils/slugify';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { useObjectUrl } from '@vueuse/core';
-import { computed, defineAsyncComponent, ref, Ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import type { portfolio } from './portfolio';
 
 const breadcrumbs = defineAsyncComponent(
@@ -14,9 +14,14 @@ const editor = defineAsyncComponent(
     () => import('@/components/admin/shared/Editor.vue'),
 );
 
+interface PortfolioType {
+    id: number;
+    title: string;
+}
+
 const { portfolio, types } = defineProps<{
     portfolio?: portfolio;
-    types: { id: number; title: string }[];
+    types: PortfolioType[];
 }>();
 
 const form = useForm({
@@ -24,16 +29,16 @@ const form = useForm({
     title: portfolio?.title ?? '',
     slug: portfolio?.slug ?? '',
     content: portfolio?.content ?? '',
-    featured_image: portfolio?.featured_image ?? (null as File | null),
+    featured_image: portfolio?.featured_image ?? (null as File | string | null),
     status: portfolio?.status ?? 'draft',
     portfolio_type_id: portfolio?.portfolio_type_id ?? null,
 });
 
+// Auto-generate slug from title only for new portfolios
 watch(
     () => form.title,
     (title) => {
-        if (portfolio?.slug) return;
-        else {
+        if (!portfolio?.slug) {
             form.slug = slugify(title, {
                 maxLength: 70,
             });
@@ -44,20 +49,20 @@ watch(
 const rules = {
     title: [
         (v: string) => !!v || 'Portfolio Title is required',
-        (v?: string) =>
-            (v && v.length <= 100) ||
-            'Portfolio Title must be 100 characters or less',
+        (v: string) =>
+            v.length <= 100 || 'Portfolio Title must be 100 characters or less',
     ],
     slug: [
-        (v?: string) =>
-            (v && v.length <= 70) ||
+        (v: string) =>
+            !v ||
+            v.length <= 70 ||
             'Portfolio Slug must be 70 characters or less',
     ],
     featured_image: [
         (v?: File[]) => {
             if (!v || v.length === 0) return true;
             const file = v[0];
-            if (file && file.size > 5120 * 1024) {
+            if (file?.size > 5120 * 1024) {
                 return 'File size must be less than 5MB';
             }
             return true;
@@ -66,79 +71,85 @@ const rules = {
 };
 
 const portfolioForm = ref();
-const submit = async () => {
-    const { valid } = await portfolioForm.value.validate();
+const fileBrowser = ref<HTMLInputElement | null>(null);
+const fileSelected = ref<File | null>(null);
 
-    if (valid) {
-        const routeName = portfolio?.id
-            ? 'portfolio.update'
-            : 'portfolio.store';
-        const routeParams = portfolio ? [portfolio.id] : [];
-
-        form.post(route(routeName, routeParams), {
-            forceFormData: true, // Always force FormData when dealing with files
-            preserveScroll: false,
-            onFinish: () => {
-                console.log('Finish');
-            },
-            onError: (errors) => {
-                console.error('Form submission errors:', errors);
-            },
-        });
+// Compute image preview URL
+const imagePreviewUrl = computed(() => {
+    if (fileSelected.value) {
+        return useObjectUrl(fileSelected.value).value;
     }
-};
-
-const bread = computed<BreadcrumbItem[]>(() => {
-    return [
-        {
-            title: 'portfolio',
-            href: '/admin/portfolio',
-        },
-        {
-            title: portfolio ? 'edit' : 'create',
-            href: portfolio
-                ? `/admin/portfolio/${portfolio.id}`
-                : '/admin/portfolio/create',
-        },
-    ];
+    return null;
 });
 
-const fileSelected = ref(null as File | null);
-const filePreview = ref<Ref | null>(null);
+// Determine which image to show
+const displayImageUrl = computed(() => {
+    if (imagePreviewUrl.value) {
+        return imagePreviewUrl.value;
+    }
+    if (portfolio?.id && typeof form.featured_image === 'string') {
+        return form.featured_image;
+    }
+    return null;
+});
+
 const uploadFile = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
+    if (target.files?.[0]) {
         fileSelected.value = target.files[0];
-        filePreview.value = useObjectUrl(target.files[0]);
         form.featured_image = fileSelected.value;
     }
 };
 
 const removeImage = () => {
-    filePreview.value = null;
     fileSelected.value = null;
     form.featured_image = null;
-};
-
-const fileBrowser = ref<HTMLInputElement | null>(null);
-const fileSelector = () => {
     if (fileBrowser.value) {
-        fileBrowser.value.click();
+        fileBrowser.value.value = '';
     }
 };
 
-const showImage = computed(() => {
-    if (portfolio?.id && portfolio.featured_image) return true;
-    else if (filePreview.value) return true;
-    else return false;
-});
+const fileSelector = () => {
+    fileBrowser.value?.click();
+};
 
-const showWhichImage = computed(() => {
-    if (filePreview.value) return filePreview.value.value;
-    else if (portfolio?.id && portfolio.featured_image)
-        return form.featured_image;
-    else return false;
-});
+const submit = async () => {
+    const { valid } = await portfolioForm.value.validate();
+
+    if (!valid) return;
+
+    const routeName = portfolio?.id ? 'portfolio.update' : 'portfolio.store';
+    const routeParams = portfolio?.id ? [portfolio.id] : [];
+
+    form.post(route(routeName, routeParams), {
+        forceFormData: true,
+        preserveScroll: false,
+        onFinish: () => {
+            console.log('Form submitted successfully');
+        },
+        onError: (errors) => {
+            console.error('Form submission errors:', errors);
+        },
+    });
+};
+
+const breadcrumbItems = computed(() => [
+    {
+        title: 'portfolio',
+        href: '/admin/portfolio',
+    },
+    {
+        title: portfolio ? 'edit' : 'create',
+        href: portfolio
+            ? `/admin/portfolio/${portfolio.id}`
+            : '/admin/portfolio/create',
+    },
+]);
+
+const statusOptions = [
+    { title: 'Draft', value: 'draft' },
+    { title: 'Published', value: 'published' },
+] as const;
 </script>
 
 <template>
@@ -149,7 +160,7 @@ const showWhichImage = computed(() => {
         <v-container>
             <v-row>
                 <v-col cols="12">
-                    <breadcrumbs :items="bread" />
+                    <breadcrumbs :items="breadcrumbItems" />
                 </v-col>
             </v-row>
             <v-form ref="portfolioForm" @submit.prevent="submit">
@@ -162,7 +173,7 @@ const showWhichImage = computed(() => {
                             :rules="rules.title"
                             :error-messages="form.errors.title"
                             @update:model-value="form.errors.title = ''"
-                        ></v-text-field>
+                        />
 
                         <v-label>Portfolio Slug</v-label>
                         <v-text-field
@@ -171,17 +182,18 @@ const showWhichImage = computed(() => {
                             :rules="rules.slug"
                             :error-messages="form.errors.slug"
                             @update:model-value="form.errors.slug = ''"
-                        ></v-text-field>
+                        />
 
                         <v-label>Portfolio Content</v-label>
                         <v-card color="transparent">
                             <editor v-model:content="form.content" />
                         </v-card>
                     </v-col>
+
                     <v-col cols="12" md="4">
                         <v-card class="mb-3">
                             <v-card-text class="pb-0">
-                                <v-label> Work Type </v-label>
+                                <v-label>Work Type</v-label>
                             </v-card-text>
                             <v-card-text class="pt-0">
                                 <v-select
@@ -194,89 +206,71 @@ const showWhichImage = computed(() => {
                                     :error-messages="
                                         form.errors.portfolio_type_id
                                     "
-                                ></v-select>
+                                />
                             </v-card-text>
                         </v-card>
 
                         <v-card class="mb-3">
                             <v-card-text class="pb-0">
-                                <v-label> Status </v-label>
+                                <v-label>Status</v-label>
                             </v-card-text>
                             <v-card-text class="pt-0">
                                 <v-select
                                     v-model="form.status"
                                     hide-details
-                                    :items="[
-                                        { title: 'Draft', value: 'draft' },
-                                        {
-                                            title: 'Published',
-                                            value: 'published',
-                                        },
-                                    ]"
+                                    :items="statusOptions"
                                     placeholder="Portfolio Status"
-                                ></v-select>
+                                />
                             </v-card-text>
                         </v-card>
 
                         <v-card class="mb-3">
-                            <v-card-text
-                                class="pb-0 d-flex align-center justify-space-between"
-                            >
-                                <v-label> Featured Image </v-label>
+                            <v-card-text class="pb-0">
+                                <v-label>Featured Image</v-label>
                             </v-card-text>
                             <v-card-text class="pt-0">
                                 <v-card border height="200">
-                                    <template
-                                        v-if="
-                                            portfolio?.featured_image ||
-                                            filePreview
-                                        "
-                                    >
-                                    </template>
-
-                                    <template v-if="showImage">
+                                    <template v-if="displayImageUrl">
                                         <v-card-text class="pa-0">
                                             <v-hover
-                                                #default="{ isHovering, props }"
+                                                v-slot="{ isHovering, props }"
                                             >
                                                 <v-img
                                                     v-bind="props"
                                                     cover
                                                     height="200"
-                                                    :src="showWhichImage"
+                                                    :src="displayImageUrl"
                                                 >
                                                     <v-fade-transition>
-                                                        <template
+                                                        <div
                                                             v-if="isHovering"
+                                                            class="w-100 h-100 d-flex align-center justify-center"
+                                                            style="
+                                                                background-color: rgba(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.5
+                                                                );
+                                                            "
                                                         >
-                                                            <div
-                                                                class="w-100 h-100 d-flex align-center justify-center"
-                                                                style="
-                                                                    background-color: rgba(
-                                                                        0,
-                                                                        0,
-                                                                        0,
-                                                                        0.5
-                                                                    );
+                                                            <v-btn
+                                                                v-tooltip="
+                                                                    'Remove Featured Image'
                                                                 "
-                                                            >
-                                                                <v-btn
-                                                                    v-tooltip="
-                                                                        'Remove Featured Image'
-                                                                    "
-                                                                    rounded="circle"
-                                                                    icon="carbon:close"
-                                                                    @click="
-                                                                        removeImage
-                                                                    "
-                                                                ></v-btn>
-                                                            </div>
-                                                        </template>
+                                                                rounded="circle"
+                                                                icon="carbon:close"
+                                                                @click="
+                                                                    removeImage
+                                                                "
+                                                            />
+                                                        </div>
                                                     </v-fade-transition>
                                                 </v-img>
                                             </v-hover>
                                         </v-card-text>
                                     </template>
+
                                     <template v-else>
                                         <v-card-text
                                             class="pt-0 w-100 h-100 d-flex align-center justify-center flex-column"
@@ -288,7 +282,7 @@ const showWhichImage = computed(() => {
                                                     size="32"
                                                     class="mb-2"
                                                     icon="carbon:cloud-upload"
-                                                ></v-icon>
+                                                />
                                                 <div
                                                     class="text-h6 font-weight-medium"
                                                 >
@@ -300,7 +294,8 @@ const showWhichImage = computed(() => {
                                                 id="file-browser"
                                                 class="d-none"
                                                 type="file"
-                                                @input="uploadFile"
+                                                accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                                                @change="uploadFile"
                                             />
                                             <v-btn border @click="fileSelector">
                                                 Browse
@@ -313,7 +308,7 @@ const showWhichImage = computed(() => {
 
                         <v-card class="mb-3">
                             <v-card-text class="pb-0">
-                                <v-label> Actions </v-label>
+                                <v-label>Actions</v-label>
                             </v-card-text>
                             <v-card-actions>
                                 <v-btn
@@ -322,7 +317,9 @@ const showWhichImage = computed(() => {
                                     :loading="form.processing"
                                     :disabled="form.processing"
                                 >
-                                    {{ portfolio ? 'Update' : 'Create' }}
+                                    {{
+                                        portfolio ? 'Update' : 'Create'
+                                    }}
                                     Portfolio
                                 </v-btn>
                                 <v-btn
@@ -339,61 +336,3 @@ const showWhichImage = computed(() => {
         </v-container>
     </AuthenticatedLayout>
 </template>
-
-<!-- <v-card class="mb-3">
-                                <v-card-text class="pb-0">
-                                    <v-label> Featured Image </v-label>
-                                </v-card-text>
-                                <v-card-text>
-                                    Show existing image if available and no new image selected
-                                    <div
-                                        v-if="existingImageUrl && !imagePreview"
-                                        class="mb-3"
-                                    >
-                                        <v-img
-                                            :src="existingImageUrl"
-                                            max-height="200"
-                                            class="mb-2"
-                                            cover
-                                        ></v-img>
-                                        <v-chip size="small" color="success"
-                                            >Current Image</v-chip
-                                        >
-                                    </div>
-
-                                    Show preview of new file
-                                    <div v-if="imagePreview" class="mb-3">
-                                        <v-img
-                                            :src="imagePreview"
-                                            max-height="200"
-                                            class="mb-2"
-                                            cover
-                                        ></v-img>
-                                        <v-chip size="small" color="primary">
-                                            New Image:
-                                            {{ form.featured_image?.name }}</v-chip
-                                        >
-                                    </div>
-
-                                    File input with proper v-model handling
-                                    <v-file-input
-                                        :model-value="
-                                            form.featured_image
-                                                ? [form.featured_image]
-                                                : []
-                                        "
-                                        label="Choose featured image"
-                                        accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
-                                        prepend-icon="mdi-camera"
-                                        :rules="rules.featured_image"
-                                        :error-messages="form.errors.featured_image"
-                                        @update:model-value="<any>handleFileChange"
-                                        @click:clear="handleFileChange(null)"
-                                    ></v-file-input>
-
-                                    <v-card-subtitle class="px-0 text-caption">
-                                        Accepted formats: JPEG, PNG, GIF, WebP (Max:
-                                        5MB)
-                                    </v-card-subtitle>
-                                </v-card-text>
-                            </v-card> -->
