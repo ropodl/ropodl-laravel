@@ -7,44 +7,32 @@ import { Link, usePage } from '@inertiajs/vue3';
 const page = usePage();
 
 const getActive = (to: string) => {
-    const currentUrl =
-        page.url.endsWith('/') && page.url !== '/'
-            ? page.url.slice(0, -1)
-            : page.url;
-    const normalizedTo = to.endsWith('/') && to !== '/' ? to.slice(0, -1) : to;
-    return (
-        currentUrl === normalizedTo || currentUrl.startsWith(normalizedTo + '/')
-    );
+  const currentUrl = page.url.endsWith('/') && page.url !== '/' ? page.url.slice(0, -1) : page.url;
+  const normalizedTo = to.endsWith('/') && to !== '/' ? to.slice(0, -1) : to;
+  return currentUrl === normalizedTo || currentUrl.startsWith(normalizedTo + '/');
 };
 </script>
 
 <template>
-    <v-card
-        flat
-        color="rgba(var(--v-theme-surface), 0.7)"
-        location="top"
-        rounded="pill"
-        class="position-fixed pa-1 blur-8 top-10 z-1010"
-    >
-        <v-tabs
-            color="primary"
-            density="compact"
-            hide-slider
-            show-arrows
-            height="50"
-            rounded="pill"
-        >
-            <template v-for="{ icon, title, to } in pages" :key="title">
-                <Link :href="to" as="span" prefetch>
-                    <v-tab rounded="pill" :active="getActive(to)">
-                        <template #prepend>
-                            <v-icon :icon> </v-icon>
-                            <!-- <Icon ="icon" /> -->
-                        </template>
-                        {{ title }}
-                    </v-tab>
-                </Link>
+  <v-card
+    flat
+    color="rgba(var(--v-theme-surface), 0.7)"
+    location="top"
+    rounded="pill"
+    class="position-fixed pa-1 blur-8 top-10 z-1010"
+  >
+    <v-tabs color="primary" density="compact" hide-slider show-arrows height="50" rounded="pill">
+      <template v-for="{ icon, title, to } in pages" :key="title">
+        <Link :href="to" as="span" prefetch>
+          <v-tab rounded="pill" :active="getActive(to)">
+            <template #prepend>
+              <v-icon :icon> </v-icon>
+              <!-- <Icon ="icon" /> -->
             </template>
-        </v-tabs>
-    </v-card>
+            {{ title }}
+          </v-tab>
+        </Link>
+      </template>
+    </v-tabs>
+  </v-card>
 </template>

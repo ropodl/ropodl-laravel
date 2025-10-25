@@ -14,9 +14,10 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blog = Blog::get();
+        $blog = ['test', 'testest'];
+
         return Inertia::render('admin/blog/index', [
-            'blogs' => $blog
+            'blogs' => $blog,
         ]);
     }
 

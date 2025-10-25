@@ -1,11 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-defineProps<{
-    props?: object;
-}>();
+import { snackbar } from '@/composables/snack';
+
+const { show, text, color } = snackbar();
 </script>
 <template>
-    <v-snackbar v-bind="props" />
+  <v-snackbar v-model="show" :color :text />
 </template>
-
-<style></style>

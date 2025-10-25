@@ -5,10 +5,8 @@ import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <Head>
-        <title>Blogs</title>
-    </Head>
-    <AuthenticatedLayout title="Blogs List">
-        blog listing page
-    </AuthenticatedLayout>
+  <Head>
+    <title>Blogs</title>
+  </Head>
+  <AuthenticatedLayout title="Blogs List"> blog listing page </AuthenticatedLayout>
 </template>

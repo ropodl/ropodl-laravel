@@ -5,20 +5,20 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import vuetify from './plugins/vuetify';
 
 createInertiaApp({
-    title: (title) => `${title} - Saroj Poudel`,
-    resolve: (name) =>
-        resolvePageComponent(
-            `./pages/${name}.vue`,
-            import.meta.glob<DefineComponent>('./pages/**/*.vue'),
-        ),
-    setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue)
-            .use(vuetify)
-            .mount(el);
-    },
-    progress: {
-        color: '#fff',
-    },
+  title: (title) => `${title} - Saroj Poudel`,
+  resolve: (name) =>
+    resolvePageComponent(
+      `./pages/${name}.vue`,
+      import.meta.glob<DefineComponent>('./pages/**/*.vue'),
+    ),
+  setup({ el, App, props, plugin }) {
+    createApp({ render: () => h(App, props) })
+      .use(plugin)
+      .use(ZiggyVue)
+      .use(vuetify)
+      .mount(el);
+  },
+  progress: {
+    color: '#fff',
+  },
 });

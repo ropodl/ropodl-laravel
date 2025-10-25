@@ -4,12 +4,12 @@ import { h } from 'vue';
 import type { IconProps, IconSet } from 'vuetify';
 
 const iconify: IconSet = {
-    component: (props: IconProps) => {
-        return h(IconifyIcon, {
-            icon: props.icon as string,
-            tag: props.tag,
-        });
-    },
+  component: (props: IconProps) => {
+    return h(IconifyIcon, {
+      icon: props.icon as string,
+      tag: props.tag,
+    });
+  },
 };
 
 // addCollection(carbonIcons);

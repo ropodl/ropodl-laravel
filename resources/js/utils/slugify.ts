@@ -1,46 +1,46 @@
 // Common stop words to remove (more comprehensive list)
 const STOP_WORDS = new Set([
-    'a',
-    'an',
-    'and',
-    'are',
-    'as',
-    'at',
-    'be',
-    'by',
-    'for',
-    'from',
-    'has',
-    'he',
-    'in',
-    'is',
-    'it',
-    'its',
-    'of',
-    'on',
-    'that',
-    'the',
-    'to',
-    'was',
-    'will',
-    'with',
-    'am',
-    'been',
-    'being',
-    'have',
-    'had',
-    'were',
-    'but',
-    'or',
-    'not',
-    'this',
-    'can',
-    'could',
-    'should',
-    'would',
-    'shall',
-    'may',
-    'might',
+  'a',
+  'an',
+  'and',
+  'are',
+  'as',
+  'at',
+  'be',
+  'by',
+  'for',
+  'from',
+  'has',
+  'he',
+  'in',
+  'is',
+  'it',
+  'its',
+  'of',
+  'on',
+  'that',
+  'the',
+  'to',
+  'was',
+  'will',
+  'with',
+  'am',
+  'been',
+  'being',
+  'have',
+  'had',
+  'were',
+  'but',
+  'or',
+  'not',
+  'this',
+  'can',
+  'could',
+  'should',
+  'would',
+  'shall',
+  'may',
+  'might',
 ]);
 
 /**
@@ -50,55 +50,48 @@ const STOP_WORDS = new Set([
  * @returns URL-friendly slug string
  */
 export default (
-    title?: string,
-    options: {
-        removeStopWords?: boolean;
-        maxLength?: number;
-        separator?: string;
-    } = {},
+  title?: string,
+  options: {
+    removeStopWords?: boolean;
+    maxLength?: number;
+    separator?: string;
+  } = {},
 ): string => {
-    if (!title?.trim()) return '';
+  if (!title?.trim()) return '';
 
-    const {
-        removeStopWords = true,
-        maxLength = 100,
-        separator = '-',
-    } = options;
+  const { removeStopWords = true, maxLength = 100, separator = '-' } = options;
 
-    let slug = title
-        .toLowerCase()
-        .trim()
-        // Replace accented characters
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        // Convert to basic latin characters
-        .replace(/[^\w\s-]/g, '')
-        // Replace multiple spaces/separators with single space
-        .replace(/[\s_-]+/g, ' ');
+  let slug = title
+    .toLowerCase()
+    .trim()
+    // Replace accented characters
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Convert to basic latin characters
+    .replace(/[^\w\s-]/g, '')
+    // Replace multiple spaces/separators with single space
+    .replace(/[\s_-]+/g, ' ');
 
-    // Remove stop words if enabled
-    if (removeStopWords) {
-        slug = slug
-            .split(' ')
-            .filter((word) => word.length > 0 && !STOP_WORDS.has(word))
-            .join(' ');
-    }
-
-    // Convert spaces to separators and clean up
+  // Remove stop words if enabled
+  if (removeStopWords) {
     slug = slug
-        .replace(/\s+/g, separator)
-        .replace(new RegExp(`\\${separator}+`, 'g'), separator)
-        .replace(new RegExp(`^\\${separator}+|\\${separator}+$`, 'g'), '');
+      .split(' ')
+      .filter((word) => word.length > 0 && !STOP_WORDS.has(word))
+      .join(' ');
+  }
 
-    // Truncate if too long, but avoid cutting words
-    if (slug.length > maxLength) {
-        const truncated = slug.substring(0, maxLength);
-        const lastSeparator = truncated.lastIndexOf(separator);
-        slug =
-            lastSeparator > maxLength * 0.7
-                ? truncated.substring(0, lastSeparator)
-                : truncated;
-    }
+  // Convert spaces to separators and clean up
+  slug = slug
+    .replace(/\s+/g, separator)
+    .replace(new RegExp(`\\${separator}+`, 'g'), separator)
+    .replace(new RegExp(`^\\${separator}+|\\${separator}+$`, 'g'), '');
 
-    return slug || '';
+  // Truncate if too long, but avoid cutting words
+  if (slug.length > maxLength) {
+    const truncated = slug.substring(0, maxLength);
+    const lastSeparator = truncated.lastIndexOf(separator);
+    slug = lastSeparator > maxLength * 0.7 ? truncated.substring(0, lastSeparator) : truncated;
+  }
+
+  return slug || '';
 };
