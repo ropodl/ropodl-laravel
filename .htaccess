@@ -4,7 +4,7 @@
     Options +FollowSymLinks
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+    RewriteRule ^(.*)$ public/$1 [L]
     <!-- redirect to public -->
     RewriteEngine On
     # Redirect all requests to Laravel public folder
