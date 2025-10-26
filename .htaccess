@@ -1,6 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    # Redirect all requests to Laravel public folder
+
+    # Redirect /public/(any-folder)/(any-url) to /(any-folder)/(any-url)
+    # This must come BEFORE the Laravel public folder rewrite rule
+    RewriteRule ^public/([^/]+)/(.*)$ /$1/$2 [R=301,L]
+
+    # Redirect all other requests to Laravel's public folder
     RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [R=301,L]
+    RewriteRule ^(.*)$ public/$1 [L]
+
 </IfModule>
