@@ -30,7 +30,7 @@ export const pages = [
   {
     icon: 'carbon:blog',
     title: 'blog',
-    to: '/blog/',
+    to: '/blog',
   },
   {
     icon: 'carbon:workspace',
