@@ -1,14 +1,13 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import type { PortfolioType, Portfolio } from '@/types/portfolio';
+import type { Portfolio } from '@/types/portfolio';
 import { Head } from '@inertiajs/vue3';
 import { defineAsyncComponent } from 'vue';
 
 const card = defineAsyncComponent(() => import('@/components/guest/shared/portfolio/card.vue'));
 
 defineProps<{
-  // types: PortfolioType[];
   portfolios: Portfolio[];
 }>();
 
