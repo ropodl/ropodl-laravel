@@ -1,6 +1,15 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    # Redirect all requests to Laravel public folder
+
+    # -------------------------------------------------------------
+    # 1. Send all requests to the /public directory internally
+    # -------------------------------------------------------------
+    # Skip if the request is already inside /public
     RewriteCond %{REQUEST_URI} !^/public/
+    # Skip if the request is for an existing file or folder
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Internally rewrite everything to /public/index.php
     RewriteRule ^(.*)$ public/$1 [L]
+
 </IfModule>
