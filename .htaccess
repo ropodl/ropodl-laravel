@@ -2,9 +2,9 @@
 <!-- /remove trailing slash -->
     RewriteEngine On
     Options +FollowSymLinks
-    RewriteCond %{REQUEST_FILENAME} !-d
+    <!-- RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^(.*)$ public/$1 [L]
+    RewriteRule ^(.*)$ public/$1 [L] -->
     <!-- redirect to public -->
     # Redirect all requests to Laravel public folder
     RewriteCond %{REQUEST_URI} !^/public/
