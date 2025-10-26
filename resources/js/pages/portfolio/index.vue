@@ -1,24 +1,15 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import GuestLayout from '@/layouts/GuestLayout.vue';
+import type { PortfolioType, Portfolio } from '@/types/portfolio';
 import { Head } from '@inertiajs/vue3';
 import { defineAsyncComponent } from 'vue';
 
 const card = defineAsyncComponent(() => import('@/components/guest/shared/portfolio/card.vue'));
 
 defineProps<{
-  types: {
-    id: number;
-    title: string;
-  }[];
-  portfolios: {
-    id: number;
-    title: string;
-    subtitle: string;
-    slug: string;
-    status: string;
-    featured_image: string;
-  }[];
+  // types: PortfolioType[];
+  portfolios: Portfolio[];
 }>();
 
 const calcCol = (i: number) => {
@@ -26,6 +17,7 @@ const calcCol = (i: number) => {
 };
 </script>
 <template>
+
   <Head>
     <title>Portfolio</title>
   </Head>
@@ -45,7 +37,7 @@ const calcCol = (i: number) => {
         </v-row>
       </template>
       <template v-else>
-        <v-alert border color="transparent"> Sorry no content available. </v-alert>
+        <v-alert border border-color="white" color="transparent"> Sorry no content available. </v-alert>
       </template>
     </v-container>
   </guest-layout>

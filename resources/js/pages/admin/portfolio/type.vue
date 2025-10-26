@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
+import type { PortfolioType } from '@/types/portfolio';
 import { itemsPerPage } from '@/utils/constants';
 import { Head, router } from '@inertiajs/vue3';
 import { defineAsyncComponent, ref } from 'vue';
@@ -11,7 +12,7 @@ const addNewDialog = defineAsyncComponent(
 );
 
 const { types, search, pagination } = defineProps<{
-  types: object;
+  types: PortfolioType[];
   search?: string;
   pagination: pagination;
 }>();
@@ -81,8 +82,7 @@ const headers = ref([
       <v-row>
         <v-col cols="12">
           <v-card rounded="lg">
-            <v-data-table-server :headers hide-default-footer :items="<any>types" :items-length="10"
-              :items-per-page="10">
+            <v-data-table-server :headers hide-default-footer :items="types" :items-length="10" :items-per-page="10">
               <template v-slot:[`item.actions`]="{ item }">
                 <v-hover v-slot:default="{ isHovering, props }">
                   <v-btn v-bind="props" icon size="small" rounded="lg" :variant="isHovering ? 'tonal' : 'text'"

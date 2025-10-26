@@ -12,7 +12,7 @@ class Portfolio extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['title', 'subtitle', 'slug', 'content', 'status', 'portfolio_type_id'];
+    protected $fillable = ['title', 'slug', 'content', 'status', 'portfolio_type_id'];
 
     protected $appends = ['featured_image'];
 

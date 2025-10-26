@@ -22,12 +22,17 @@ Route::get('blog/{slug}', function () {
 })->name('blog');
 
 Route::get('portfolio', function (Request $request, Portfolio $portflio, PortfolioType $type) {
-    $perPage = $request->input('per_page', 10);
-    $paginated = $portflio::query()->whereStatus('published')->select('id', 'title', 'slug')->paginate($perPage);
+    $perPage = $request->integer('per_page', 10);
+    $paginated = $portflio::query()
+        ->where('portfolio_type_id', '!=', 1)
+        ->whereStatus('published')
+        ->with(['type:id,title,slug'])
+        ->select('id', 'title', 'slug', 'portfolio_type_id')
+        ->paginate($perPage);
 
     return Inertia::render('portfolio/index', [
         'portfolios' => $paginated->items(),
-        'types' => $type::all(['id', 'title']),
+        // 'types' => $type::all(['id', 'title']),
         'pagination' => [
             'current_page' => $paginated->currentPage(),
             'last_page' => $paginated->lastPage(),

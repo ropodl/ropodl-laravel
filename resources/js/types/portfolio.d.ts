@@ -6,9 +6,15 @@ export interface Portfolio {
   status: string;
   featured_image?: string;
   portfolio_type_id?: number;
+  type: {
+    id: number;
+    title: string;
+    slug: string;
+  };
 }
 
 export interface PortfolioType {
   id: number;
   title: string;
+  slug?: string;
 }

@@ -1,43 +1,20 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import type { Portfolio } from '@/types/portfolio';
 import { Icon } from '@iconify/vue';
 import { Link } from '@inertiajs/vue3';
 
 defineProps<{
-  portfolio: {
-    id: number;
-    title: string;
-    subtitle: string;
-    slug: string;
-    status: string;
-    featured_image: string;
-  };
+  portfolio: Portfolio
 }>();
 </script>
 <template>
-  {{ portfolio }}
   <v-hover v-slot="{ isHovering, props: hover }">
     <Link v-bind="hover" :href="'/portfolio/' + portfolio.slug" class="text-decoration-none text-white">
     <v-card flat max-height="500" width="auto" rounded="xl" :active="isHovering"
       :variant="isHovering ? 'tonal' : 'text'" class="mb-3">
       <v-img cover :aspect-ratio="1" width="100" height="100" class="w-100 h-100 align-end"
-        :src="portfolio.featured_image">
-        <!-- <v-card
-                        rounded="0"
-                        elevation="10"
-                        class="blur-8 border border-s-0 border-e-0 border-b-0"
-                        style="
-                            background-color: rgba(var(--v-theme-surface), 0.8);
-                        "
-                    >
-                        <v-card-text
-                            class="text-center"
-                            style="white-space: normal"
-                        >
-                            {{ portfolio.title }}
-                        </v-card-text>
-                    </v-card> -->
-      </v-img>
+        :src="portfolio.featured_image" />
     </v-card>
     </Link>
     <v-card border="0" color="transparent" class="text-decoration-none">
@@ -46,7 +23,7 @@ defineProps<{
           {{ portfolio.title }}
         </v-list-item-title>
         <v-list-item-subtitle class="text-body-1">
-          {{ portfolio.subtitle }}
+          {{ portfolio.type.title }}
         </v-list-item-subtitle>
         <template #append>
           <Link :href="'/portfolio/' + portfolio.slug" as="span">
