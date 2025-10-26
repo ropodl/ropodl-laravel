@@ -1,15 +1,20 @@
 <IfModule mod_rewrite.c>
+    Options +FollowSymLinks
     RewriteEngine On
 
     # -------------------------------------------------------------
-    # 1. Send all requests to the /public directory internally
+    # 1. Remove trailing slashes (except for directories)
     # -------------------------------------------------------------
-    # Skip if the request is already inside /public
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # -------------------------------------------------------------
+    # 2. Internally route all requests to /public
+    # -------------------------------------------------------------
     RewriteCond %{REQUEST_URI} !^/public/
-    # Skip if the request is for an existing file or folder
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    # Internally rewrite everything to /public/index.php
     RewriteRule ^(.*)$ public/$1 [L]
 
 </IfModule>
