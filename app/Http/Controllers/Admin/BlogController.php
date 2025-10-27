@@ -12,12 +12,43 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, Blog $blog)
     {
-        $blog = ['test', 'testest'];
+        $perPage = $request->integer('per_page', 10); // Get per_page from request, default to 10
+        $search = $request->string('search', '');
+        $sortBy = $request->array('sort_by', []);
+        $status = $request->string('status', '')->trim();
+
+        $query = $blog::query();
+
+        if ($status->value !== '' && $status->value !== null) {
+            $query->where('status', '=', $status->value);
+        }
+
+        if ($search) {
+            $query->where('title', 'like', '%'.$search.'%');
+        }
+
+        // Apply sorting
+        if (! empty($sortBy)) {
+            $query->orderBy($sortBy['key'], $sortBy['order']);
+        } else {
+            $query->orderBy('updated_at', 'desc');
+        }
+
+        $paginated = $query->paginate($perPage)->withQueryString();
 
         return Inertia::render('admin/blog/index', [
-            'blogs' => $blog,
+            'blogs' => $paginated->items(),
+            'search' => $search,
+            'pagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page' => $paginated->lastPage(),
+                'per_page' => $paginated->perPage(),
+                'total' => $paginated->total(),
+                'from' => $paginated->firstItem(),
+                'to' => $paginated->lastItem(),
+            ],
         ]);
     }
 

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('excerpt')->nullable();
             $table->string('slug');
-            $table->string('excerpt');
             $table->longText('content')->nullable();
             $table->enum('status', ['draft', 'published'])->default('draft')->index();
             $table->timestamps();

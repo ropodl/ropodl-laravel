@@ -16,7 +16,6 @@ const calcCol = (i: number) => {
 };
 </script>
 <template>
-
   <Head>
     <title>Portfolio</title>
   </Head>
@@ -28,15 +27,32 @@ const calcCol = (i: number) => {
     <v-container>
       <template v-if="portfolios.length">
         <v-row class="py-16">
-          <template v-for="(portfolio, i) in portfolios" :key="portfolio.id">
-            <v-col class="mb-6" cols="12" :md="calcCol(i)">
+          <template
+            v-for="(portfolio, i) in portfolios"
+            :key="portfolio.id"
+          >
+            <v-col
+              class="mb-6"
+              cols="12"
+              :md="calcCol(i)"
+            >
               <card :portfolio />
             </v-col>
           </template>
         </v-row>
       </template>
       <template v-else>
-        <v-alert border border-color="white" color="transparent"> Sorry no content available. </v-alert>
+        <v-row class="py-16">
+          <v-col class="mb-6">
+            <v-alert
+              border
+              rounded="lg"
+              border-color="white"
+            >
+              Sorry no content available.
+            </v-alert>
+          </v-col>
+        </v-row>
       </template>
     </v-container>
   </guest-layout>

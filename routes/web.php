@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\PortfolioTypeController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Blog;
 use App\Models\Portfolio;
 use App\Models\PortfolioType;
 use Illuminate\Http\Request;
@@ -14,11 +15,19 @@ Route::get('/', function () {
     return Inertia::render('index');
 })->name('home');
 
-Route::get('/blog', function () {
-    return Inertia::render('blog/index');
+Route::get('blog', function (Request $request, Blog $blog) {
+    $perPage = $request->integer('per_page', 10);
+    $paginated = $blog::query()
+        ->whereStatus('published')
+        ->orderByDesc('created_at')
+        // ->with(['type:id,title,slug'])
+        ->select('id', 'title', 'excerpt', 'slug', 'created_at')
+        ->paginate($perPage);
+
+    return Inertia::render('blog/index', ['blogs' => $paginated->items()]);
 })->name('blogs');
-Route::get('blog/{slug}', function () {
-    return Inertia::render('blog/slug');
+Route::get('blog/{slug}', function (Request $request, Blog $blog) {
+    return Inertia::render('blog/slug', ['blog' => $blog]);
 })->name('blog');
 
 Route::get('portfolio', function (Request $request, Portfolio $portflio, PortfolioType $type) {
@@ -32,7 +41,6 @@ Route::get('portfolio', function (Request $request, Portfolio $portflio, Portfol
 
     return Inertia::render('portfolio/index', [
         'portfolios' => $paginated->items(),
-        // 'types' => $type::all(['id', 'title']),
         'pagination' => [
             'current_page' => $paginated->currentPage(),
             'last_page' => $paginated->lastPage(),
@@ -43,11 +51,11 @@ Route::get('portfolio', function (Request $request, Portfolio $portflio, Portfol
         ],
     ]);
 })->name('portfolios');
-Route::get('/portfolio/{portfolio:slug}', function (Request $request, Portfolio $portfolio) {
+Route::get('portfolio/{slug}', function (Request $request, Portfolio $portfolio) {
     return Inertia::render('portfolio/slug', ['portfolio' => $portfolio]);
 })->name('guest.portfolios');
 
-Route::get('/about', function () {
+Route::get('about', function () {
     return Inertia::render('about');
 })->name('about');
 

@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Portfolio>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Blog>
  */
-class PortfolioFactory extends Factory
+class BlogFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,10 +18,10 @@ class PortfolioFactory extends Factory
     {
         return [
             'title' => fake()->name(),
+            'excerpt' => fake()->sentence(),
             'slug' => fake()->slug(),
             'content' => fake()->text(),
-            'status' => 'draft',
-            'portfolio_type_id' => '1',
+            'status' => 'published',
         ];
     }
 }

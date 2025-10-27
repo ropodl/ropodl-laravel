@@ -85,21 +85,9 @@ const experience = [
 
 const items = ref([
   {
-    src: 'https://cdn.prod.website-files.com/64aac2cf3e57b0b94358bac8/64c3379c2af64bdc37bd731d_Pipefy.svg',
-    width: 120,
-    title: 'This is a test',
-  },
-  {
-    src: 'https://cdn.prod.website-files.com/64aac2cf3e57b0b94358bac8/64c3379b998d40df52eb9f7b_Django.svg',
-    width: 120,
-  },
-  {
-    src: 'https://cdn.prod.website-files.com/64aac2cf3e57b0b94358bac8/64c3379c16bbd4367791cbf8_Rackspace.svg',
-    width: 120,
-  },
-  {
-    src: 'https://cdn.prod.website-files.com/64aac2cf3e57b0b94358bac8/64c3379b3b98e1ea07ff4956_Portal.svg',
-    width: 120,
+    src: '/media/clients/api.svg',
+    company: 'API Technology',
+    position: 'Web Designer',
   },
 ]);
 </script>
@@ -113,19 +101,59 @@ const items = ref([
     </template>
     <v-container>
       <v-row>
-        <v-col cols="12" md="6">
-          <v-card border rounded="xl">
-            <v-parallax cover height="400" scale="0.9" src="/media/full.jpg"></v-parallax>
+        <v-col
+          cols="12"
+          md="5"
+        >
+          <v-card
+            border
+            rounded="xl"
+          >
+            <v-parallax
+              cover
+              height="613"
+              scale="0.8"
+              src="/media/full.jpg"
+            ></v-parallax>
           </v-card>
         </v-col>
-        <v-col cols="12" md="6" class="d-flex flex-column justify-space-between">
-          <div class="text-h6 font-weight-light">
-            As a Senior Designer with over 10 years of experience, I specialize in creating
-            intuitive and user-centered interfaces for a wide range of digital products and
-            experiences.
+        <v-col
+          cols="12"
+          md="7"
+          class="d-flex flex-column justify-space-between"
+        >
+          <div class="text-h6 font-weight-light mb-6">
+            <p>
+              As a Senior Fullstack Developer with over 6 years of experience, I specialize in
+              creating intuitive and user-centered interfaces for a wide range of digital products
+              and experiences. I work across the entire development stack, building backend systems
+              and frontend interfaces with clean, maintainable code.
+            </p>
+            <br />
+            <p>
+              On the backend, I work with Laravel for PHP applications, Express.js for Node.js
+              projects, and Hono for fast, lightweight APIs. On the frontend, I use Vue.js and Nuxt
+              to build responsive, interactive interfaces, with Vuetify for implementing Material
+              Design components and polished UI systems.
+            </p>
+            <br />
+            <p>
+              I've collaborated with designers, product managers, and developers to ship products
+              that meet business goals. Whether starting new projects or improving existing ones, I
+              approach problems methodically and deliver software that works reliably and serves the
+              people who use it.
+            </p>
           </div>
-          <Link href="/" as="span">
-            <v-btn border rounded="pill" width="230" height="80">
+          <Link
+            href="/"
+            as="span"
+          >
+            <v-btn
+              border
+              rounded="pill"
+              width="230"
+              height="80"
+            >
               Let's talk
               <template #append>
                 <v-icon end>
@@ -137,19 +165,38 @@ const items = ref([
         </v-col>
       </v-row>
       <v-row class="py-16">
-        <v-col cols="12" md="6">
-          <div class="text-h3 font-weight-medium position-sticky" style="top: 50px">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <div
+            class="text-h3 font-weight-medium position-sticky"
+            style="top: 50px"
+          >
             My past work<br />experience
           </div>
         </v-col>
-        <v-col cols="12" md="6">
-          <v-list bg-color="transparent" class="py-0" density="default">
-            <template v-for="(item, index) in experience" :key="item.title">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-list
+            bg-color="transparent"
+            class="py-0"
+            density="default"
+          >
+            <template
+              v-for="(item, index) in experience"
+              :key="item.title"
+            >
               <v-list-item :class="index === 0 ? 'mb-6' : 'my-6'">
                 <v-list-item-title class="text-h5 font-weight-medium mb-3">
                   {{ item.title }}
                 </v-list-item-title>
-                <v-list-item-subtitle class="text-body-1" style="line-height: unset">
+                <v-list-item-subtitle
+                  class="text-body-1"
+                  style="line-height: unset"
+                >
                   {{ item.desc }}
                 </v-list-item-subtitle>
                 <template #append>
@@ -167,13 +214,25 @@ const items = ref([
             A visual partner for brands, companies, and agencies.
           </div>
         </v-col>
-        <v-col cols="12" class="mt-10">
+        <v-col
+          cols="12"
+          class="mt-10"
+        >
           <v-row>
-            <template v-for="item in items" :key="item.src">
-              <v-col cols="12" md="3">
-                <v-img width="120" :src="item.src"></v-img>
-                <v-card-title class="px-0"> UIUX & Branding </v-card-title>
-                <v-card-subtitle class="px-0">2022</v-card-subtitle>
+            <template
+              v-for="({ src, company, position }, index) in items"
+              :key="index"
+            >
+              <v-col
+                cols="12"
+                md="3"
+              >
+                <v-img
+                  class="w-100"
+                  :src
+                />
+                <v-card-title class="px-0"> {{ company }} </v-card-title>
+                <v-card-subtitle class="px-0"> {{ position }} </v-card-subtitle>
               </v-col>
             </template>
           </v-row>

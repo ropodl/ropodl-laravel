@@ -15,15 +15,20 @@ class PortfolioController extends Controller
      */
     public function index(Request $request, Portfolio $portfolio)
     {
-        $perPage = $request->input('per_page', 10); // Get per_page from request, default to 10
-        $search = $request->input('search', '');
-        $sortBy = $request->input('sort_by', []);
+        $perPage = $request->integer('per_page', 10); // Get per_page from request, default to 10
+        $search = $request->string('search', '');
+        $sortBy = $request->array('sort_by', []);
+        $status = $request->string('status', '')->trim();
 
         $query = $portfolio::query();
 
+        if ($status->value !== '' && $status->value !== null) {
+            // dd($status->value);
+            $query->where('status', '=', $status->value); // or ->whereStatus($status) if you prefer the dynamic where
+        }
+
         if ($search) {
-            $query->where('title', 'like', '%'.$search.'%')
-                ->orWhere('content', 'like', '%'.$search.'%');
+            $query->where('title', 'like', '%'.$search.'%');
         }
 
         // Apply sorting
@@ -33,7 +38,7 @@ class PortfolioController extends Controller
             $query->orderBy('updated_at', 'desc');
         }
 
-        $paginated = $query->paginate($perPage);
+        $paginated = $query->paginate($perPage)->withQueryString();
 
         return Inertia::render('admin/portfolio/index', [
             'portfolios' => $paginated->items(), // Only portfolio items

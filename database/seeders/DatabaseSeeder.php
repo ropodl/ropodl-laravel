@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Blog;
 use App\Models\Portfolio;
 use App\Models\PortfolioType;
 use App\Models\User;
@@ -24,5 +25,6 @@ class DatabaseSeeder extends Seeder
 
         PortfolioType::factory(1)->create();
         Portfolio::factory(100)->create();
+        Blog::factory(100)->create();
     }
 }
