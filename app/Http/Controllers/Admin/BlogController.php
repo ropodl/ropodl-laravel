@@ -55,17 +55,29 @@ class BlogController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Blog $blog)
     {
-        //
+        return Inertia::render('admin/blog/id');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Blog $blog)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|unique:portfolios|max:255',
+            'content' => 'required|string',
+            'status' => 'required|string|in:published,draft,archived',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+        ]);
+
+        $blogData = collect($validated)->except('featured_image')->toArray();
+
+        $blog = $blog::create($blogData);
+
+        return to_route('blog.show', [$blog]);
     }
 
     /**
@@ -97,6 +109,8 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        //
+        $blog->delete();
+
+        return to_route('blog.index');
     }
 }

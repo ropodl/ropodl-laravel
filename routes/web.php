@@ -51,6 +51,7 @@ Route::get('portfolio', function (Request $request, Portfolio $portflio, Portfol
         ],
     ]);
 })->name('portfolios');
+
 Route::get('portfolio/{slug}', function (Request $request, Portfolio $portfolio) {
     return Inertia::render('portfolio/slug', ['portfolio' => $portfolio]);
 })->name('guest.portfolios');

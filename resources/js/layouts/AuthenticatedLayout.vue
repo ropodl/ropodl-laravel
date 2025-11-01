@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { left, right } from '@/composables/nav';
 import type { navItem } from '@/types/layout';
-import { Icon } from '@iconify/vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 
 const snackbar = defineAsyncComponent(() => import('@/components/shared/snackbar.vue'));
 
@@ -12,6 +11,7 @@ defineProps<{
 }>();
 
 const { props } = usePage();
+console.log(props.ziggy.location);
 
 const navItems = ref<navItem[]>([
   { icon: 'carbon:home', title: 'Home', to: '/admin' },
@@ -46,143 +46,18 @@ const navItems = ref<navItem[]>([
     to: '/admin/contact-request',
   },
 ]);
-
-const railIcon = computed(() => {
-  return left.value ? 'carbon:side-panel-close' : 'carbon:side-panel-open';
-});
-
-const openHome = () => {
-  window.open('/', '_blank');
-};
 </script>
 
 <template>
   <v-app>
-    <v-app-bar
-      flat
-      density="compact"
-      border="b"
-      order="0"
-      height="54"
-      color="rgba(var(--v-theme-surface), 0.7)"
-      class="px-1 blur-8"
-    >
-      <v-row align="center">
-        <v-col
-          cols="4"
-          md="4"
-        >
-          <v-btn
-            v-tooltip:right="`${left ? 'Collapse' : 'Expand'} Navigation`"
-            icon
-            height="54"
-            variant="text"
-            rounded="0"
-            @click="left = !left"
-          >
-            <v-icon>
-              <Icon :icon="railIcon" />
-            </v-icon>
-          </v-btn>
-          <v-menu open-on-hover>
-            <template v-slot:activator="{ props }">
-              <v-btn
-                rounded="0"
-                color="primary"
-                v-bind="props"
-              >
-                Website
-              </v-btn>
-            </template>
-            <v-list density="compact">
-              <v-list-item
-                link
-                title="Visit Website"
-                @click="openHome"
-              >
-                <template #prepend>
-                  <v-icon>
-                    <Icon icon="carbon:earth-southeast-asia-filled" />
-                  </v-icon>
-                </template>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-col>
-        <v-col
-          cols="4"
-          md="4"
-        >
-          <div class="d-flex align-center justify-center">
-            {{ title }}
-          </div>
-        </v-col>
-        <v-col
-          cols="4"
-          md="4"
-        >
-          <div class="d-flex align-center justify-end"></div>
-        </v-col>
-      </v-row>
-    </v-app-bar>
     <v-navigation-drawer
       v-model="left"
       rail
       permanent
-      order="1"
+      height="100"
       color="rgba(var(--v-theme-surface), 0.7)"
       class="blur-8"
     >
-      <!-- <v-list
-        nav
-        open-strategy="single"
-        density="compact"
-      >
-        <template
-          v-for="{ title, icon, to, subitems } in navItems"
-          :key="to"
-        >
-          <template v-if="!subitems">
-            <v-list-item
-              :title
-              link
-              @click="router.visit(<string>to)"
-            >
-              <template #prepend>
-                <v-icon :icon />
-              </template>
-            </v-list-item>
-          </template>
-          <template v-else>
-            <v-list-group>
-              <template v-slot:activator="{ props }">
-                <v-list-item
-                  v-bind="props"
-                  :title
-                >
-                  <template #prepend>
-                    <v-icon :icon />
-                  </template>
-                </v-list-item>
-              </template>
-
-              <template
-                v-for="({ title, grand, to }, i) in subitems"
-                :key="i"
-              >
-                <template v-if="!grand">
-                  <v-list-item
-                    :title
-                    link
-                    @click="router.visit(<string>to)"
-                  ></v-list-item>
-                </template>
-              </template>
-            </v-list-group>
-          </template>
-        </template>
-      </v-list> -->
-      <!-- menu -->
       <v-list
         nav
         density="compact"
@@ -191,9 +66,11 @@ const openHome = () => {
           v-for="{ title, icon, to, subitems } in navItems"
           :key="to"
         >
+          {{  }}
           <template v-if="!subitems">
             <v-list-item
               v-bind="props"
+              rounded="lg"
               link
               :title
               @click="router.visit(<string>to)"
@@ -213,7 +90,6 @@ const openHome = () => {
                 <v-list-item
                   v-bind="props"
                   link
-                  title="asd"
                 >
                   <template #prepend>
                     <v-icon :icon />

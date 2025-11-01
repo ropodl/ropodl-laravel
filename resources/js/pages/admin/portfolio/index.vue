@@ -7,7 +7,7 @@ import { itemsPerPage } from '@/utils/constants';
 import { clearParamKey } from '@/utils/global';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
-import { useDebounceFn } from '@vueuse/core';
+import { useDateFormat, useDebounceFn } from '@vueuse/core';
 import { defineAsyncComponent, ref } from 'vue';
 
 const breadcrumbs = defineAsyncComponent(() => import('@/components/admin/layout/breadcrumbs.vue'));
@@ -67,6 +67,23 @@ const bread = ref<BreadcrumbItem[]>([
 ]);
 
 const resetFilters = () => {};
+
+const actions = ref([
+  {
+    icon: 'carbon:edit',
+    title: 'Edit Blog',
+    method: (id: number) => {
+      router.visit(`/admin/portfolio/${id}`);
+    },
+  },
+  {
+    icon: 'carbon:bin',
+    title: 'Delete Blog',
+    method: (id) => {
+      router.visit(`/admin/portfolio/${id}`);
+    },
+  },
+]);
 </script>
 
 <template>
@@ -76,54 +93,66 @@ const resetFilters = () => {};
   <AuthenticatedLayout title="Portfolios List">
     <v-container>
       <breadcrumbs :items="bread" />
-      <v-row align="center">
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-text-field
-            v-model="searchQuery"
-            hide-details
-            clearable
-            persistent-clear
-            rounded="lg"
-            placeholder="Search portfolios"
-            @update:model-value="handleSearch"
-          >
-            <template #prepend-inner>
-              <v-icon>
-                <Icon icon="carbon:search" />
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <div class="d-flex">
-            <v-spacer></v-spacer>
-            <v-btn
-              v-tooltip:top="'Filters'"
-              flat
-              class="me-3"
-              @click="right = !right"
-            >
-              <v-icon>
-                <Icon icon="carbon:filter" />
-              </v-icon>
-            </v-btn>
-            <v-btn
-              flat
-              color="primary"
-              @click="router.visit('/admin/portfolio/create')"
-            >
-              Add New
-            </v-btn>
-          </div>
+      <v-row class="mb-1">
+        <v-col cols="12">
+          <div class="text-h4 font-weight-bold">Portfolio</div>
         </v-col>
       </v-row>
+      <v-card
+        class="position-sticky top-0 mb-3"
+        style="z-index: 1"
+      >
+        <v-card-text>
+          <v-row align="center">
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="searchQuery"
+                hide-details
+                clearable
+                persistent-clear
+                rounded="lg"
+                placeholder="Search portfolios"
+                @update:model-value="handleSearch"
+              >
+                <template #prepend-inner>
+                  <v-icon>
+                    <Icon icon="carbon:search" />
+                  </v-icon>
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <div class="d-flex">
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-tooltip:top="'Filters'"
+                  flat
+                  class="me-3"
+                  @click="right = !right"
+                >
+                  <v-icon>
+                    <Icon icon="carbon:filter" />
+                  </v-icon>
+                </v-btn>
+                <v-btn
+                  flat
+                  color="primary"
+                  @click="router.visit('/admin/portfolio/create')"
+                >
+                  Add New
+                </v-btn>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
       <v-row>
         <v-col cols="12">
           <v-card rounded="lg">
@@ -136,7 +165,7 @@ const resetFilters = () => {};
               hide-default-footer
               @update:sort-by="getUpdate"
             >
-              <template v-slot:[`item.status`]="{ value }">
+              <template #[`item.status`]="{ value }">
                 <v-chip
                   :color="getColor(value)"
                   variant="tonal"
@@ -145,11 +174,11 @@ const resetFilters = () => {};
                   {{ value }}
                 </v-chip>
               </template>
-              <template v-slot:[`item.created_at`]="{ value }">
-                {{ value }}
+              <template #[`item.created_at`]="{ value }">
+                {{ useDateFormat(value, 'MMMM DD, YYYY') }}
               </template>
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-hover v-slot:default="{ isHovering, props }">
+              <template #[`item.actions`]="{ item }">
+                <!-- <v-hover #default="{ isHovering, props }">
                   <v-btn
                     v-bind="props"
                     icon
@@ -158,11 +187,33 @@ const resetFilters = () => {};
                     :variant="isHovering ? 'tonal' : 'text'"
                     @click="router.visit(`/admin/portfolio/${item.id}`)"
                   >
-                    <v-icon>
-                      <Icon icon="carbon:edit" />
-                    </v-icon>
+                    <v-icon icon="carbon:edit" />
                   </v-btn>
-                </v-hover>
+                </v-hover> -->
+                <v-menu>
+                  <template v-slot:activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      rounded="0"
+                      height="44"
+                      size="small"
+                      icon="carbon:chevron-down"
+                    ></v-btn>
+                  </template>
+                  <v-list density="compact">
+                    <template
+                      v-for="({ icon, title, method }, index) in actions"
+                      :key="index"
+                    >
+                      <v-list-item
+                        :value="index"
+                        :prepend-icon="icon"
+                        :title
+                        @click="method && method(item.id)"
+                      ></v-list-item>
+                    </template>
+                  </v-list>
+                </v-menu>
               </template>
             </v-data-table-server>
           </v-card>

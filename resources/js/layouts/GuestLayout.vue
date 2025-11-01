@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import bottombar from '@/components/guest/layout/bottombar.vue';
-import navbar from '@/components/guest/layout/navbar.vue';
+import { defineAsyncComponent } from 'vue';
 
-// defineProps<{
-//     title?: string;
-// }>();
+const bottombar = defineAsyncComponent(() => import('@/components/guest/layout/bottombar.vue'));
+const navbar = defineAsyncComponent(() => import('@/components/guest/layout/navbar.vue'));
 </script>
 
 <template>
@@ -12,11 +10,17 @@ import navbar from '@/components/guest/layout/navbar.vue';
     <navbar />
     <v-main>
       <div class="v-bg position-fixed top-0 right-0 left-0 bottom-0">
-        <div aria-hidden="true" class="overflow-hidden opacity-20 w-100 h-100" />
+        <div
+          aria-hidden="true"
+          class="overflow-hidden opacity-20 w-100 h-100"
+        />
       </div>
       <v-container>
         <v-row>
-          <v-col cols="12" class="text-lg-h1 text-h3 font-weight-bold">
+          <v-col
+            cols="12"
+            class="text-lg-h1 text-h3 font-weight-bold"
+          >
             <slot name="title"></slot>
           </v-col>
         </v-row>

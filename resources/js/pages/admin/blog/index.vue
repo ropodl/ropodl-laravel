@@ -116,7 +116,7 @@ const resetFilters = () => {};
             <v-btn
               flat
               color="primary"
-              @click="router.visit('/admin/portfolio/create')"
+              @click="router.visit('/admin/blog/create')"
             >
               Add New
             </v-btn>
@@ -135,7 +135,7 @@ const resetFilters = () => {};
               hide-default-footer
               @update:sort-by="getUpdate"
             >
-              <template v-slot:[`item.status`]="{ value }">
+              <template #[`item.status`]="{ value }">
                 <v-chip
                   :color="getColor(value)"
                   variant="tonal"
@@ -144,10 +144,10 @@ const resetFilters = () => {};
                   {{ value }}
                 </v-chip>
               </template>
-              <template v-slot:[`item.created_at`]="{ value }">
+              <template #[`item.created_at`]="{ value }">
                 {{ useDateFormat(value, 'MMMM D, YYYY') }}
               </template>
-              <template v-slot:[`item.actions`]="{ item }">
+              <template #[`item.actions`]="{ item }">
                 <v-hover v-slot:default="{ isHovering, props }">
                   <v-btn
                     v-bind="props"
@@ -157,9 +157,7 @@ const resetFilters = () => {};
                     :variant="isHovering ? 'tonal' : 'text'"
                     @click="router.visit(`/admin/portfolio/${item.id}`)"
                   >
-                    <v-icon>
-                      <Icon icon="carbon:edit" />
-                    </v-icon>
+                    <v-icon icon="carbon:edit" />
                   </v-btn>
                 </v-hover>
               </template>
