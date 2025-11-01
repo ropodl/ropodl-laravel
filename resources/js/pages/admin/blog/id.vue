@@ -305,12 +305,12 @@ const statusOptions = [
                   :loading="form.processing"
                   :disabled="form.processing"
                 >
-                  {{ portfolio ? 'Update' : 'Create' }}
+                  {{ blog ? 'Update' : 'Create' }}
                   Portfolio
                 </v-btn>
                 <v-btn
                   variant="outlined"
-                  @click="router.visit('/admin/portfolio')"
+                  @click="router.visit('/admin/blog')"
                 >
                   Cancel
                 </v-btn>
