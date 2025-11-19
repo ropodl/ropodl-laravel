@@ -2,18 +2,13 @@
 import { left, right } from '@/composables/nav';
 import type { navItem } from '@/types/layout';
 import { router, usePage } from '@inertiajs/vue3';
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 
 const snackbar = defineAsyncComponent(() => import('@/components/shared/snackbar.vue'));
 
-defineProps<{
-  title: string;
-}>();
-
 const { props } = usePage();
-console.log(props.ziggy.location);
 
-const navItems = ref<navItem[]>([
+const navItems: navItem[] = [
   { icon: 'carbon:home', title: 'Home', to: '/admin' },
   {
     icon: 'carbon:edit',
@@ -45,7 +40,42 @@ const navItems = ref<navItem[]>([
     subtitle: 'Contact and Feedback',
     to: '/admin/contact-request',
   },
-]);
+];
+
+// --- OPTIMIZATIONS AND FIXES ---
+
+// Use `const` - this value doesn't change at runtime.
+const rootURL = import.meta.env.VITE_APP_URL;
+
+// Use `computed` - this calculates the path only when the URL changes.
+const currentPath = computed(() => {
+  return props.ziggy.location.replace(rootURL, '');
+});
+
+/**
+ * Recursively checks if a nav item or any of its children are active.
+ */
+const isItemActive = (item: navItem): boolean => {
+  const path = currentPath.value;
+
+  // 1. Check item's own 'to'
+  if (item.to && item.to === path) {
+    return true;
+  }
+
+  // 2. Check 'subitems' recursively
+  if (item.subitems && item.subitems.some((sub) => isItemActive(sub))) {
+    return true;
+  }
+
+  // 3. Check 'grand' items recursively
+  if (item.grand && item.grand.some((grand) => isItemActive(grand))) {
+    return true;
+  }
+
+  // Not active
+  return false;
+};
 </script>
 
 <template>
@@ -63,36 +93,38 @@ const navItems = ref<navItem[]>([
         density="compact"
       >
         <template
-          v-for="{ title, icon, to, subitems } in navItems"
-          :key="to"
+          v-for="item in navItems"
+          :key="item.title"
         >
-          {{  }}
-          <template v-if="!subitems">
+          <template v-if="!item.subitems">
             <v-list-item
-              v-bind="props"
               rounded="lg"
               link
-              :title
-              @click="router.visit(<string>to)"
+              :title="item.title"
+              :active="isItemActive(item)"
+              @click="item.to && router.visit(item.to)"
             >
               <template #prepend>
-                <v-icon :icon />
+                <v-icon :icon="item.icon" />
               </template>
             </v-list-item>
           </template>
+
           <template v-else>
             <v-menu
               :close-on-content-click="false"
               location="end"
               offset="14"
             >
-              <template v-slot:activator="{ props }">
+              <template v-slot:activator="{ props: menuProps }">
                 <v-list-item
-                  v-bind="props"
+                  v-bind="menuProps"
                   link
+                  rounded="lg"
+                  :active="isItemActive(item)"
                 >
                   <template #prepend>
-                    <v-icon :icon />
+                    <v-icon :icon="item.icon" />
                   </template>
                 </v-list-item>
               </template>
@@ -101,25 +133,48 @@ const navItems = ref<navItem[]>([
                 <v-card-title class="d-flex align-center pb-0">
                   <v-icon
                     start
-                    :icon
+                    :icon="item.icon"
                     size="small"
                   ></v-icon>
-                  {{ title }}
+                  {{ item.title }}
                 </v-card-title>
-                <!-- <v-divider></v-divider> -->
+
                 <v-list
                   density="compact"
                   class="pa-0"
                 >
                   <template
-                    v-for="(item, i) in subitems"
+                    v-for="(subItem, i) in item.subitems"
                     :key="i"
                   >
-                    <v-list-item
-                      link
-                      :title="item.title"
-                      @click="router.visit(<string>item.to)"
-                    ></v-list-item>
+                    <template v-if="subItem.grand">
+                      <v-list-group :value="subItem.title">
+                        <template v-slot:activator="{ props: groupProps }">
+                          <v-list-item
+                            v-bind="groupProps"
+                            :title="subItem.title"
+                          ></v-list-item>
+                        </template>
+
+                        <v-list-item
+                          v-for="(grandItem, j) in subItem.grand"
+                          :key="j"
+                          :title="grandItem.title"
+                          :active="isItemActive(grandItem)"
+                          @click="grandItem.to && router.visit(grandItem.to)"
+                          link
+                        ></v-list-item>
+                      </v-list-group>
+                    </template>
+
+                    <template v-else>
+                      <v-list-item
+                        link
+                        :title="subItem.title"
+                        :active="isItemActive(subItem)"
+                        @click="subItem.to && router.visit(subItem.to)"
+                      ></v-list-item>
+                    </template>
                   </template>
                 </v-list>
               </v-card>
@@ -143,9 +198,9 @@ const navItems = ref<navItem[]>([
               </template>
               <template #append>
                 <v-menu>
-                  <template v-slot:activator="{ props }">
+                  <template v-slot:activator="{ props: menuProps }">
                     <v-btn
-                      v-bind="props"
+                      v-bind="menuProps"
                       icon="mdi-menu-down"
                       size="small"
                       variant="text"
@@ -181,7 +236,6 @@ const navItems = ref<navItem[]>([
     >
       <slot name="right-nav-body"></slot>
       <template #append>
-        <!-- <v-divider></v-divider> -->
         <slot name="right-nav-append"></slot>
       </template>
     </v-navigation-drawer>

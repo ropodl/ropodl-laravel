@@ -1,11 +1,8 @@
 export type navItem = {
-  icon: string;
   title: string;
-  subtitle?: string;
-  to?: string;
-  subitems?: {
-    title: string;
-    to?: string;
-    grand?: { title: string; to?: string }[];
-  }[];
+  icon?: string; // Optional
+  to?: string; // Optional
+  subtitle?: string; // Optional
+  subitems?: navItem[]; // Recursive: array of navItem
+  grand?: navItem[]; // Recursive: array of navItem
 };

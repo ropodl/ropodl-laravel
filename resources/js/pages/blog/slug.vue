@@ -1,20 +1,15 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import type { blog } from '@/types/blog';
 import { Head } from '@inertiajs/vue3';
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 const GuestLayout = defineAsyncComponent(() => import('@/layouts/GuestLayout.vue'));
 const Dynamic = defineAsyncComponent(() => import('@/components/shared/dynamic.vue'));
 
-const blog = ref({
-  date: '',
-  slug: 'hi',
-  title: 'Asus TUF Gaming F16 (2025) launched in Nepal with RTX 5060 GPU',
-  featured_image:
-    'https://images.unsplash.com/photo-1758001606578-09b352df5b85?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  excerpt: 'this is a tests',
-  content: `<p>asdasd</p>`,
-});
+defineProps<{
+  blog: blog
+}>();
 </script>
 <template>
   <Head>

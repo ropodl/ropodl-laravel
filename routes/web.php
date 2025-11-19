@@ -20,7 +20,6 @@ Route::get('blog', function (Request $request, Blog $blog) {
     $paginated = $blog::query()
         ->whereStatus('published')
         ->orderByDesc('created_at')
-        // ->with(['type:id,title,slug'])
         ->select('id', 'title', 'excerpt', 'slug', 'created_at')
         ->paginate($perPage);
 

@@ -3,7 +3,7 @@
 import { right } from '@/composables/nav';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import type { blog } from '@/types/blog';
-import { itemsPerPage } from '@/utils/constants';
+import { itemsPerPage } from '@/utils/constants/pagination';
 import { clearParamKey } from '@/utils/global';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
@@ -72,7 +72,7 @@ const resetFilters = () => {};
   <Head>
     <title>Blogs</title>
   </Head>
-  <AuthenticatedLayout title="Blogs List">
+  <AuthenticatedLayout>
     <v-container>
       <breadcrumbs :items="bread" />
       <v-row align="center">

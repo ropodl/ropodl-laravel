@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
 
+import navbar from '@/components/guest/layout/navbar.vue';
 const bottombar = defineAsyncComponent(() => import('@/components/guest/layout/bottombar.vue'));
-const navbar = defineAsyncComponent(() => import('@/components/guest/layout/navbar.vue'));
 </script>
 
 <template>

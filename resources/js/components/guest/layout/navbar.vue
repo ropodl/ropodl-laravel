@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { pages } from '@/utils/constants';
-// import { Icon } from '@iconify/vue';
+import { pages } from '@/utils/constants/guestPage';
 import { Link, usePage } from '@inertiajs/vue3';
 
 const page = usePage();
@@ -21,10 +20,27 @@ const getActive = (to: string) => {
     rounded="pill"
     class="position-fixed pa-1 blur-8 top-10 z-1010"
   >
-    <v-tabs color="primary" density="compact" hide-slider show-arrows height="50" rounded="pill">
-      <template v-for="{ icon, title, to } in pages" :key="title">
-        <Link :href="to" as="span" prefetch>
-          <v-tab rounded="pill" :active="getActive(to)">
+    <v-tabs
+      color="primary"
+      density="compact"
+      hide-slider
+      show-arrows
+      height="50"
+      rounded="pill"
+    >
+      <template
+        v-for="{ icon, title, to } in pages"
+        :key="title"
+      >
+        <Link
+          :href="to"
+          as="span"
+          prefetch
+        >
+          <v-tab
+            rounded="pill"
+            :active="getActive(to)"
+          >
             <template #prepend>
               <v-icon :icon> </v-icon>
               <!-- <Icon ="icon" /> -->

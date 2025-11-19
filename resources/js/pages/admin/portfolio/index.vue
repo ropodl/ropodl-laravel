@@ -3,14 +3,16 @@
 import { right } from '@/composables/nav';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import type { Portfolio } from '@/types/portfolio';
-import { itemsPerPage } from '@/utils/constants';
+import { itemsPerPage } from '@/utils/constants/pagination';
 import { clearParamKey } from '@/utils/global';
 import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
 import { useDateFormat, useDebounceFn } from '@vueuse/core';
 import { defineAsyncComponent, ref } from 'vue';
+import { DataTableHeader } from 'vuetify';
 
 const breadcrumbs = defineAsyncComponent(() => import('@/components/admin/layout/breadcrumbs.vue'));
+const Dynamic = defineAsyncComponent(() => import('@/components/shared/dynamic.vue'));
 
 const { portfolios, search, pagination } = defineProps<{
   portfolios: Portfolio[];
@@ -24,12 +26,12 @@ const filters = ref({
   status: null,
 });
 
-const headers = [
+const headers = ref<DataTableHeader[]>([
   { title: 'Title', key: 'title', sortable: true },
   { title: 'Status', key: 'status', sortable: true },
   { title: 'Created At', key: 'created_at', sortable: true },
-  { title: 'Actions', key: 'actions', sortable: false },
-];
+  { title: 'Actions', key: 'actions', align: 'center', sortable: false },
+]);
 
 const getUpdate = (options: { key: string; order?: boolean }[]) => {
   const params = {
@@ -71,31 +73,51 @@ const resetFilters = () => {};
 const actions = ref([
   {
     icon: 'carbon:edit',
-    title: 'Edit Blog',
+    color: '',
+    title: 'Edit Portfolio',
     method: (id: number) => {
       router.visit(`/admin/portfolio/${id}`);
     },
   },
   {
-    icon: 'carbon:bin',
-    title: 'Delete Blog',
-    method: (id) => {
-      router.visit(`/admin/portfolio/${id}`);
-    },
+    icon: 'carbon:trash-can',
+    color: 'red',
+    title: 'Delete Portfolio',
+    method: () => null,
   },
 ]);
 </script>
-
 <template>
   <Head>
     <title>Portfolios</title>
   </Head>
-  <AuthenticatedLayout title="Portfolios List">
+  <AuthenticatedLayout>
     <v-container>
       <breadcrumbs :items="bread" />
-      <v-row class="mb-1">
-        <v-col cols="12">
+      <v-row
+        align="center"
+        class="mb-1"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
           <div class="text-h4 font-weight-bold">Portfolio</div>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <div class="d-flex align-center">
+            <v-spacer class="hidden-sm-and-down"></v-spacer>
+            <v-btn
+              flat
+              color="primary"
+              prepend-icon="carbon:add"
+              text="Add New"
+              @click="router.visit('/admin/portfolio/create')"
+            ></v-btn>
+          </div>
         </v-col>
       </v-row>
       <v-card
@@ -118,9 +140,7 @@ const actions = ref([
                 @update:model-value="handleSearch"
               >
                 <template #prepend-inner>
-                  <v-icon>
-                    <Icon icon="carbon:search" />
-                  </v-icon>
+                  <v-icon icon="carbon:search"></v-icon>
                 </template>
               </v-text-field>
             </v-col>
@@ -134,19 +154,12 @@ const actions = ref([
                 <v-btn
                   v-tooltip:top="'Filters'"
                   flat
-                  class="me-3"
+                  height="40"
+                  variant="tonal"
                   @click="right = !right"
                 >
-                  <v-icon>
-                    <Icon icon="carbon:filter" />
-                  </v-icon>
-                </v-btn>
-                <v-btn
-                  flat
-                  color="primary"
-                  @click="router.visit('/admin/portfolio/create')"
-                >
-                  Add New
+                <v-icon start icon="carbon:filter" />
+                Filters
                 </v-btn>
               </div>
             </v-col>
@@ -157,7 +170,7 @@ const actions = ref([
         <v-col cols="12">
           <v-card rounded="lg">
             <v-data-table-server
-              :headers="headers"
+              :headers
               :items="portfolios"
               :items-length="pagination.total"
               :page="pagination.current_page"
@@ -178,24 +191,48 @@ const actions = ref([
                 {{ useDateFormat(value, 'MMMM DD, YYYY') }}
               </template>
               <template #[`item.actions`]="{ item }">
-                <!-- <v-hover #default="{ isHovering, props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    size="small"
-                    rounded="lg"
-                    :variant="isHovering ? 'tonal' : 'text'"
-                    @click="router.visit(`/admin/portfolio/${item.id}`)"
-                  >
-                    <v-icon icon="carbon:edit" />
-                  </v-btn>
-                </v-hover> -->
+                <v-bottom-sheet
+                  inset
+                  persistent
+                  scrollable
+                >
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <v-btn
+                      v-bind="activatorProps"
+                      v-tooltip="{ text: 'View Portfolio', location: 'top' }"
+                      size="small"
+                      icon="carbon:view"
+                    ></v-btn>
+                  </template>
+
+                  <template v-slot:default="{ isActive }">
+                    <v-card
+                      rounded="t"
+                      :title="item.title"
+                    >
+                      <v-card-text>
+                        <dynamic :content="item.content" />
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text="Close Dialog"
+                          @click="isActive.value = false"
+                        ></v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-bottom-sheet>
+                <v-btn
+                  v-tooltip="{ text: 'Edit Portfolio', location: 'top' }"
+                  size="small"
+                  icon="carbon:edit"
+                ></v-btn>
                 <v-menu>
                   <template v-slot:activator="{ props }">
                     <v-btn
                       v-bind="props"
-                      rounded="0"
-                      height="44"
+                      v-tooltip="{ text: 'More Actions', location: 'top' }"
                       size="small"
                       icon="carbon:chevron-down"
                     ></v-btn>
@@ -228,7 +265,7 @@ const actions = ref([
             <v-pagination
               v-model="paginate.current_page"
               density="compact"
-              :total-visible="5"
+              :total-visible="6"
               :length="pagination.last_page"
               @update:model-value="
                 (value) => {
