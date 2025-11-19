@@ -57,22 +57,18 @@ const currentPath = computed(() => {
  */
 const isItemActive = (item: navItem): boolean => {
   const path = currentPath.value;
-
   // 1. Check item's own 'to'
   if (item.to && item.to === path) {
     return true;
   }
-
   // 2. Check 'subitems' recursively
   if (item.subitems && item.subitems.some((sub) => isItemActive(sub))) {
     return true;
   }
-
   // 3. Check 'grand' items recursively
   if (item.grand && item.grand.some((grand) => isItemActive(grand))) {
     return true;
   }
-
   // Not active
   return false;
 };

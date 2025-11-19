@@ -24,7 +24,10 @@ const submit = () => {
   <GuestLayout>
     <v-container>
       <v-row>
-        <v-col col="12" md="4">
+        <v-col
+          col="12"
+          md="4"
+        >
           <div class="mb-4">
             This is a secure area of the application. Please confirm your password before
             continuing.
@@ -36,7 +39,10 @@ const submit = () => {
               :loading="form.processing"
             ></v-text-field>
             <div>
-              <InputLabel for="password" value="Password" />
+              <InputLabel
+                for="password"
+                value="Password"
+              />
               <TextInput
                 id="password"
                 type="password"
@@ -46,7 +52,10 @@ const submit = () => {
                 autocomplete="current-password"
                 autofocus
               />
-              <InputError class="mt-2" :message="form.errors.password" />
+              <InputError
+                class="mt-2"
+                :message="form.errors.password"
+              />
             </div>
 
             <div class="mt-4 flex justify-end">

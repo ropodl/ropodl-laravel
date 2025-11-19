@@ -28,11 +28,18 @@ const submit = () => {
 
 <template>
   <Head title="Log in" />
-  <GuestLayout title="Log In." class="mt-16">
+  <GuestLayout
+    title="Log In."
+    class="mt-16"
+  >
     <template #title> Log In. </template>
     <v-container>
       <v-row class="pb-16">
-        <v-col cols="12" md="4" class="fill-height">
+        <v-col
+          cols="12"
+          md="4"
+          class="fill-height"
+        >
           <template v-if="status">
             <div class="mb-4 text-sm font-medium text-green-600">
               {{ status }}
@@ -61,7 +68,10 @@ const submit = () => {
                 </v-icon>
               </template>
             </v-text-field>
-            <v-checkbox v-model="form.remember" label="Remember Me"></v-checkbox>
+            <v-checkbox
+              v-model="form.remember"
+              label="Remember Me"
+            ></v-checkbox>
             <div class="d-flex align-center justify-space-between">
               <!-- <template v-if="canResetPassword">
                                 <Link
@@ -72,7 +82,12 @@ const submit = () => {
                                 </Link>
                             </template> -->
 
-              <v-btn color="primary" type="submit" class="px-10" :disabled="form.processing">
+              <v-btn
+                color="primary"
+                type="submit"
+                class="px-10"
+                :disabled="form.processing"
+              >
                 Log in
               </v-btn>
             </div>

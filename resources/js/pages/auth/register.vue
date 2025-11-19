@@ -26,10 +26,16 @@ const submit = () => {
 
 <template>
   <Head title="Register" />
-  <GuestLayout title="Register." class="mt-16">
+  <GuestLayout
+    title="Register."
+    class="mt-16"
+  >
     <v-container>
       <v-row>
-        <v-col col="12" md="4">
+        <v-col
+          col="12"
+          md="4"
+        >
           <form @submit.prevent="submit">
             <v-text-field
               v-model="form.name"
@@ -70,11 +76,19 @@ const submit = () => {
               </template>
             </v-text-field>
             <div class="d-flex align-center justify-space-between">
-              <Link :href="route('login')" as="VBtn">
+              <Link
+                :href="route('login')"
+                as="VBtn"
+              >
                 <v-btn> Already registered? </v-btn>
               </Link>
 
-              <v-btn color="primary" type="submit" class="px-10" :disabled="form.processing">
+              <v-btn
+                color="primary"
+                type="submit"
+                class="px-10"
+                :disabled="form.processing"
+              >
                 Register
               </v-btn>
             </div>

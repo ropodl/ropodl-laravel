@@ -17,16 +17,26 @@ const submit = () => {
 
 <template>
   <Head title="Forgot Password" />
-  <GuestLayout class="mt-16" title="Forgot Password.">
+  <GuestLayout
+    class="mt-16"
+    title="Forgot Password."
+  >
     <v-container>
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col
+          cols="12"
+          md="4"
+        >
           <div class="mb-4">
             No problem. Just let us know your email address and we will email you a password reset
             link that will allow you to choose a new one.
           </div>
           <template v-if="status">
-            <v-alert color="success" density="compact" class="mb-4">
+            <v-alert
+              color="success"
+              density="compact"
+              class="mb-4"
+            >
               {{ status }}
             </v-alert>
           </template>
@@ -40,7 +50,11 @@ const submit = () => {
               @input="form.errors.email = ''"
             ></v-text-field>
 
-            <v-btn type="submit" color="primary" :disabled="form.processing">
+            <v-btn
+              type="submit"
+              color="primary"
+              :disabled="form.processing"
+            >
               Send Password Reset Link
             </v-btn>
           </form>

@@ -5,5 +5,9 @@ import { snackbar } from '@/composables/snack';
 const { show, text, color } = snackbar();
 </script>
 <template>
-  <v-snackbar v-model="show" :color :text />
+  <v-snackbar
+    v-model="show"
+    :color
+    :text
+  />
 </template>

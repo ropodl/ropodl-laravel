@@ -2,9 +2,10 @@
 <script setup lang="ts">
 import { socials } from '@/utils/socials';
 import { Icon } from '@iconify/vue';
-import { useGoTo } from 'vuetify';
+import { useDisplay, useGoTo } from 'vuetify';
 
 const goTo = useGoTo();
+const { mobile } = useDisplay();
 
 const goTop = () => {
   goTo(0, {
@@ -18,6 +19,7 @@ const goTop = () => {
     absolute
     border="t"
     class="blur-8 position-relative"
+    :class="{ 'pb-16': mobile }"
     color="rgba(var(--v-theme-background),0.7)"
   >
     <v-container
@@ -36,9 +38,7 @@ const goTop = () => {
             rounded="circle"
             @click="goTop"
           >
-            <v-icon>
-              <Icon icon="carbon:arrow-up" />
-            </v-icon>
+            <v-icon icon="carbon:arrow-up" />
           </v-btn>
         </v-col>
       </v-row>

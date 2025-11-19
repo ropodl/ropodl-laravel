@@ -5,7 +5,6 @@ import AuthenticatedLayout from '@/layouts/AuthenticatedLayout.vue';
 import type { Portfolio } from '@/types/portfolio';
 import { itemsPerPage } from '@/utils/constants/pagination';
 import { clearParamKey } from '@/utils/global';
-import { Icon } from '@iconify/vue';
 import { Head, router } from '@inertiajs/vue3';
 import { useDateFormat, useDebounceFn } from '@vueuse/core';
 import { defineAsyncComponent, ref } from 'vue';
@@ -158,8 +157,11 @@ const actions = ref([
                   variant="tonal"
                   @click="right = !right"
                 >
-                <v-icon start icon="carbon:filter" />
-                Filters
+                  <v-icon
+                    start
+                    icon="carbon:filter"
+                  />
+                  Filters
                 </v-btn>
               </div>
             </v-col>

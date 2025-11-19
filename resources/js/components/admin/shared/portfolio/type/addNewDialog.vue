@@ -58,13 +58,24 @@ const submit = async (dialog: Ref) => {
 };
 </script>
 <template>
-  <v-dialog persistent max-width="500">
+  <v-dialog
+    persistent
+    max-width="500"
+  >
     <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" flat color="primary">Add New</v-btn>
+      <v-btn
+        v-bind="activatorProps"
+        flat
+        color="primary"
+        >Add New</v-btn
+      >
     </template>
 
     <template v-slot:default="{ isActive }">
-      <v-form ref="typeForm" @submit.prevent="submit(isActive)">
+      <v-form
+        ref="typeForm"
+        @submit.prevent="submit(isActive)"
+      >
         <v-card title="Add New Portfolio Type">
           <v-card-text class="pb-0">
             <v-label>Portfolio Type Title</v-label>
@@ -85,7 +96,14 @@ const submit = async (dialog: Ref) => {
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="isActive.value = false"> Close Dialog </v-btn>
-            <v-btn color="primary" class="px-10" variant="flat" type="submit"> Save </v-btn>
+            <v-btn
+              color="primary"
+              class="px-10"
+              variant="flat"
+              type="submit"
+            >
+              Save
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-form>

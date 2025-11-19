@@ -2,8 +2,11 @@
 <script setup lang="ts">
 import { pages } from '@/utils/constants/guestPage';
 import { Link, usePage } from '@inertiajs/vue3';
+import { useDisplay } from 'vuetify';
 
 const page = usePage();
+
+const { mobile } = useDisplay();
 
 const getActive = (to: string) => {
   const currentUrl = page.url.endsWith('/') && page.url !== '/' ? page.url.slice(0, -1) : page.url;
@@ -16,9 +19,10 @@ const getActive = (to: string) => {
   <v-card
     flat
     color="rgba(var(--v-theme-surface), 0.7)"
-    location="top"
+    :location="mobile ? 'bottom' : 'top'"
     rounded="pill"
-    class="position-fixed pa-1 blur-8 top-10 z-1010"
+    class="position-fixed pa-1 blur-8 z-1010"
+    :class="[mobile ? 'bottom-10' : 'top-10']"
   >
     <v-tabs
       color="primary"
@@ -40,12 +44,12 @@ const getActive = (to: string) => {
           <v-tab
             rounded="pill"
             :active="getActive(to)"
+            :stacked="mobile"
           >
-            <template #prepend>
-              <v-icon :icon> </v-icon>
-              <!-- <Icon ="icon" /> -->
-            </template>
-            {{ title }}
+            <v-icon
+              :start="!mobile"
+              :icon
+            />{{ title }}
           </v-tab>
         </Link>
       </template>

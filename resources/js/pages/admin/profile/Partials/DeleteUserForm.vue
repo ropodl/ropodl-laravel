@@ -54,7 +54,10 @@ const closeModal = () => {
 
     <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
 
-    <Modal :show="confirmingUserDeletion" @close="closeModal">
+    <Modal
+      :show="confirmingUserDeletion"
+      @close="closeModal"
+    >
       <div class="p-6">
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
           Are you sure you want to delete your account?
@@ -66,7 +69,11 @@ const closeModal = () => {
         </p>
 
         <div class="mt-6">
-          <InputLabel for="password" value="Password" class="sr-only" />
+          <InputLabel
+            for="password"
+            value="Password"
+            class="sr-only"
+          />
 
           <TextInput
             id="password"
@@ -78,7 +85,10 @@ const closeModal = () => {
             @keyup.enter="deleteUser"
           />
 
-          <InputError :message="form.errors.password" class="mt-2" />
+          <InputError
+            :message="form.errors.password"
+            class="mt-2"
+          />
         </div>
 
         <div class="mt-6 flex justify-end">

@@ -153,9 +153,15 @@ const statusOptions = [
           <breadcrumbs :items="breadcrumbItems" />
         </v-col>
       </v-row>
-      <v-form ref="portfolioForm" @submit.prevent="submit">
+      <v-form
+        ref="portfolioForm"
+        @submit.prevent="submit"
+      >
         <v-row>
-          <v-col cols="12" md="8">
+          <v-col
+            cols="12"
+            md="8"
+          >
             <v-label>Portfolio Title</v-label>
             <v-text-field
               v-model="form.title"
@@ -180,7 +186,10 @@ const statusOptions = [
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="4">
+          <v-col
+            cols="12"
+            md="4"
+          >
             <v-card class="mb-3">
               <v-card-text class="pb-0">
                 <v-label>Work Type</v-label>
@@ -217,11 +226,19 @@ const statusOptions = [
                 <v-label>Featured Image</v-label>
               </v-card-text>
               <v-card-text class="pt-0">
-                <v-card border height="200">
+                <v-card
+                  border
+                  height="200"
+                >
                   <template v-if="displayImageUrl">
                     <v-card-text class="pa-0">
                       <v-hover v-slot="{ isHovering, props }">
-                        <v-img v-bind="props" cover height="200" :src="displayImageUrl">
+                        <v-img
+                          v-bind="props"
+                          cover
+                          height="200"
+                          :src="displayImageUrl"
+                        >
                           <v-fade-transition>
                             <div
                               v-if="isHovering"
@@ -246,7 +263,11 @@ const statusOptions = [
                       class="pt-0 w-100 h-100 d-flex align-center justify-center flex-column"
                     >
                       <div class="d-flex align-center justify-center flex-column mb-3">
-                        <v-icon size="32" class="mb-2" icon="carbon:cloud-upload" />
+                        <v-icon
+                          size="32"
+                          class="mb-2"
+                          icon="carbon:cloud-upload"
+                        />
                         <div class="text-h6 font-weight-medium">Select Featured image</div>
                       </div>
                       <input
@@ -257,8 +278,16 @@ const statusOptions = [
                         accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
                         @change="uploadFile"
                       />
-                      <v-btn border @click="fileSelector"> Browse </v-btn>
-                      <div v-if="form.errors.featured_image" class="mt-2">
+                      <v-btn
+                        border
+                        @click="fileSelector"
+                      >
+                        Browse
+                      </v-btn>
+                      <div
+                        v-if="form.errors.featured_image"
+                        class="mt-2"
+                      >
                         <div style="color: #c62828; font-size: 0.875rem">
                           {{ form.errors.featured_image }}
                         </div>
@@ -283,7 +312,12 @@ const statusOptions = [
                   {{ portfolio ? 'Update' : 'Create' }}
                   Portfolio
                 </v-btn>
-                <v-btn variant="outlined" @click="router.visit('/admin/portfolio')"> Cancel </v-btn>
+                <v-btn
+                  variant="outlined"
+                  @click="router.visit('/admin/portfolio')"
+                >
+                  Cancel
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>

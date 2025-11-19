@@ -8,7 +8,7 @@ const GuestLayout = defineAsyncComponent(() => import('@/layouts/GuestLayout.vue
 const Dynamic = defineAsyncComponent(() => import('@/components/shared/dynamic.vue'));
 
 defineProps<{
-  blog: blog
+  blog: blog;
 }>();
 </script>
 <template>
@@ -18,7 +18,10 @@ defineProps<{
   <guest-layout class="mt-16">
     <v-container>
       <v-row v-if="blog.excerpt">
-        <v-col cols="12" md="12">
+        <v-col
+          cols="12"
+          md="12"
+        >
           <v-card-title
             class="text-md-h2 text-h4 font-weight-bold px-0 pt-0"
             style="line-height: 1.2; white-space: unset !important"
@@ -32,8 +35,15 @@ defineProps<{
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-card border rounded="xl">
-            <v-img cover :aspect-ratio="16 / 8" :src="blog.featured_image"></v-img>
+          <v-card
+            border
+            rounded="xl"
+          >
+            <v-img
+              cover
+              :aspect-ratio="16 / 8"
+              :src="blog.featured_image"
+            ></v-img>
           </v-card>
         </v-col>
       </v-row>

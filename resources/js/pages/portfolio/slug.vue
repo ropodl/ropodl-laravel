@@ -29,8 +29,15 @@ defineProps<{
     <v-container>
       <v-row>
         <v-col cols="12">
-          <v-card border rounded="xl">
-            <v-img cover :aspect-ratio="16 / 8" :src="portfolio.featured_image"></v-img>
+          <v-card
+            border
+            rounded="xl"
+          >
+            <v-img
+              cover
+              :aspect-ratio="16 / 8"
+              :src="portfolio.featured_image"
+            ></v-img>
           </v-card>
         </v-col>
       </v-row>

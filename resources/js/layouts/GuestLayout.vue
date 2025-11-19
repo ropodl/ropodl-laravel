@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
+import { useDisplay } from 'vuetify';
 
 import navbar from '@/components/guest/layout/navbar.vue';
 const bottombar = defineAsyncComponent(() => import('@/components/guest/layout/bottombar.vue'));
+
+const { mobile } = useDisplay();
 </script>
 
 <template>
